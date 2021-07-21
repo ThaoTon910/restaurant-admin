@@ -1,6 +1,7 @@
 import i18next from 'i18next';
 import en from './navigation-i18n/en';
 import StoreNavigation from '../main/manages/stores/StoreNavigation';
+import ManageNavigation from '../main/manages/manageNavigation';
 
 i18next.addResourceBundle('en', 'navigation', en);
 
@@ -22,7 +23,7 @@ const navigationConfig = [
 			}
 		]
 	},
-	StoreNavigation
+	ManageNavigation
 ];
 
 export default navigationConfig;

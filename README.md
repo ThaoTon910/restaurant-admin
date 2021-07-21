@@ -53,3 +53,8 @@ eslint . --ext .js --ext .ts --fix
 ```bash
 npm install  --legacy-peer-deps
 ```
+
+## Run chrome without Cors
+```bash
+open -n -a /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --args --user-data-dir="/tmp/chrome_dev_test" --disable-web-security
+```

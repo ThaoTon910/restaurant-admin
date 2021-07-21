@@ -65,7 +65,7 @@ const authDB = {
 				email: 'staff@fusetheme.com',
 				settings: {
 					layout: {
-						style: 'layout2',
+						style: 'layout1',
 						config: {
 							mode: 'boxed',
 							scroll: 'content',
