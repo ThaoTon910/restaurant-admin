@@ -14,46 +14,46 @@ import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import FuseLoading from '@fuse/core/FuseLoading';
 import CategoryStatus from './CategoryStatus';
-import { selectOrders, getOrders } from '../store/ordersSlice';
+import { selectCategories, getCategories } from '../store/categoriesSlice';
 import CategoryTableHead from './CategoryTableHead';
 
 function CategoryTable(props) {
 	const dispatch = useDispatch();
-	const orders = useSelector(selectOrders);
-	const searchText = useSelector(({ eCommerceApp }) => eCommerceApp.orders.searchText);
+	const categories = useSelector(selectCategories);
+	const searchText = useSelector(({ eCommerceApp }) => eCommerceApp.categories.searchText);
 
 	const [loading, setLoading] = useState(true);
 	const [selected, setSelected] = useState([]);
-	const [data, setData] = useState(orders);
+	const [data, setData] = useState(categories);
 	const [page, setPage] = useState(0);
 	const [rowsPerPage, setRowsPerPage] = useState(10);
-	const [order, setOrder] = useState({
+	const [category, setCategory] = useState({
 		direction: 'asc',
 		id: null
 	});
 
 	useEffect(() => {
-		dispatch(getOrders()).then(() => setLoading(false));
+		dispatch(getCategories()).then(() => setLoading(false));
 	}, [dispatch]);
 
 	useEffect(() => {
 		if (searchText.length !== 0) {
-			setData(FuseUtils.filterArrayByString(orders, searchText));
+			setData(FuseUtils.filterArrayByString(categories, searchText));
 			setPage(0);
 		} else {
-			setData(orders);
+			setData(categories);
 		}
-	}, [orders, searchText]);
+	}, [categories, searchText]);
 
 	function handleRequestSort(event, property) {
 		const id = property;
 		let direction = 'desc';
 
-		if (order.id === property && order.direction === 'desc') {
+		if (category.id === property && category.direction === 'desc') {
 			direction = 'asc';
 		}
 
-		setOrder({
+		setCategory({
 			direction,
 			id
 		});
@@ -72,7 +72,7 @@ function CategoryTable(props) {
 	}
 
 	function handleClick(item) {
-		props.history.push(`/apps/e-commerce/orders/${item.id}`);
+		props.history.push(`/apps/e-commerce/categories/${item.id}`);
 	}
 
 	function handleCheck(event, id) {
@@ -124,7 +124,7 @@ function CategoryTable(props) {
 				<Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle">
 					<CategoryTableHead
 						selectedOrderIds={selected}
-						order={order}
+						category={category}
 						onSelectAllClick={handleSelectAllClick}
 						onRequestSort={handleRequestSort}
 						rowCount={data.length}
@@ -136,14 +136,14 @@ function CategoryTable(props) {
 							data,
 							[
 								o => {
-									switch (order.id) {
+									switch (category.id) {
 										case 'index': {
 											return parseInt(o.index, 10);
 										}
 									}
 								}
 							],
-							[order.direction]
+							[category.direction]
 						)
 							.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 							.map(n => {

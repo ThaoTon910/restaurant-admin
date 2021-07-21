@@ -6,11 +6,11 @@ import Typography from '@material-ui/core/Typography';
 import { motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectMainTheme } from 'app/store/fuse/settingsSlice';
-import { setOrdersSearchText } from '../store/ordersSlice';
+import { setCategoriesSearchText } from '../store/categoriesSlice';
 
 function CategoryHeader(props) {
 	const dispatch = useDispatch();
-	const searchText = useSelector(({ eCommerceApp }) => eCommerceApp.orders.searchText);
+	const searchText = useSelector(({ eCommerceApp }) => eCommerceApp.categories.searchText);
 	const mainTheme = useSelector(selectMainTheme);
 
 	return (
@@ -54,7 +54,7 @@ function CategoryHeader(props) {
 							inputProps={{
 								'aria-label': 'Search'
 							}}
-							onChange={ev => dispatch(setOrdersSearchText(ev))}
+							onChange={ev => dispatch(setCategoriesSearchText(ev))}
 						/>
 					</Paper>
 				</ThemeProvider>
