@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import withReducer from 'app/store/withReducer';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { motion } from 'framer-motion';
@@ -12,8 +13,9 @@ import {
 } from '../store/categoriesSlice';
 import { openNewMenuItemDialog, getMenuItems, selectMenuItems, openEditMenuItemDialog } from '../store/menuItemsSlice';
 import CategoryPage from './CategoryPage';
-import { STORE_ACTION_SET_CONTENT_TOOLBAR_RIGHT, StoreContextDispatch } from '../context/StoreContext';
+import { STORE_ACTION_SET_CONTENT_TOOLBAR_RIGHT, StoreContextDispatch, StoreContextProdiver } from '../context/StoreContext';
 import CategorytDialog from './CategoryDialog';
+import reducer from '../store';
 // import MenuItemDialog from './MenuItemDialog';
 
 function CategoryAddNewButton({ handleAddCategory }) {
@@ -57,21 +59,21 @@ function CategoryPageLayout() {
 
 	useEffect(() => {
 		if (!isCategoriesLoading) {
-			storeContextDispatch({
-				type: STORE_ACTION_SET_CONTENT_TOOLBAR_RIGHT,
-				payload: CategoryAddNewButton({
-					handleAddCategory: () => {
-						// dispatch(openNewServiceCategoryDialog({ storeId: routeParams.storeId }));
-					}
-				})
-			});
+			// storeContextDispatch({
+			// 	type: STORE_ACTION_SET_CONTENT_TOOLBAR_RIGHT,
+			// 	payload: CategoryAddNewButton({
+			// 		handleAddCategory: () => {
+			// 			// dispatch(openNewServiceCategoryDialog({ storeId: routeParams.storeId }));
+			// 		}
+			// 	})
+			// });
 		}
 		return () => {
 			// Clean up when leaving the page
-			storeContextDispatch({
-				type: STORE_ACTION_SET_CONTENT_TOOLBAR_RIGHT,
-				payload: null
-			});
+			// storeContextDispatch({
+			// 	type: STORE_ACTION_SET_CONTENT_TOOLBAR_RIGHT,
+			// 	payload: null
+			// });
 		};
 	}, [
 		isCategoriesLoading,
@@ -80,21 +82,24 @@ function CategoryPageLayout() {
 		storeContextDispatch
 	]);
 
-	return isCategoriesLoading ? (
-		<div className="text-center">
-			<CircularProgress size={20} className="ml-10" color="secondary" />
-		</div>
-	) : (
-		<>
-			<CategoryPage
-				treeServices={categories}
-				// addOrUpdateService={addOrUpdateService}
-				updateCategory={updateCategory}
-			/>
-			<CategorytDialog />
-			{/*<ServiceDialog />*/}
-		</>
-	);
-}
+	return(
 
-export default CategoryPageLayout;
+	// <StoreContextProdiver>
+		isCategoriesLoading ? (
+			<div className="text-center">
+				<CircularProgress size={20} className="ml-10" color="secondary" />
+			</div>
+		) : (
+			<>
+				<CategoryPage
+					treeServices={categories}
+					// addOrUpdateService={addOrUpdateService}
+					updateCategory={updateCategory}
+				/>
+				<CategorytDialog />
+				{/*<ServiceDialog />*/}
+			</>
+	// </StoreContextProdiver>
+	))
+}
+export default withReducer('restaurantApp', reducer)(CategoryPageLayout);

@@ -26,16 +26,13 @@ export function MenuItemTable({ menuItems, category, addOrUpdateService }) {
 		});
 	};
 
-	return menuItems.length ? (
+	return menuItems && menuItems.length ? (
 		<TableContainer component={Paper}>
 			<Table aria-label="simple table">
 				<TableHead>
 					<TableRow>
 						<TableCell>Name</TableCell>
 						<TableCell className="hidden sm:table-cell">Description</TableCell>
-						<TableCell className="hidden sm:table-cell" align="center">
-							Duration (minutes)
-						</TableCell>
 						<TableCell align="center">Price ($)</TableCell>
 						<TableCell align="right" className="w-100">
 							<IconButton className="px-5 mr-4 text-green-500" onClick={addNewService}>
@@ -51,9 +48,6 @@ export function MenuItemTable({ menuItems, category, addOrUpdateService }) {
 								{row.name}
 							</TableCell>
 							<TableCell className="hidden sm:table-cell">{row.description}</TableCell>
-							<TableCell className="hidden sm:table-cell" align="center">
-								{row.duration}
-							</TableCell>
 							<TableCell align="center">{row.price}</TableCell>
 							<TableCell align="right">
 								<div>

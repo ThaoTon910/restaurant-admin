@@ -10,7 +10,7 @@ import { MenuItemTable } from './MenuItemTable';
 function CategoryPage({ treeServices, addOrUpdateService, updateCategory }) {
 	return treeServices.length ? (
 		treeServices.map((category, index) => (
-			<Accordion key={index} defaultExpanded>
+			<Accordion key={index}>
 				<AccordionSummary
 					expandIcon={<ExpandMoreIcon />}
 					aria-label="Expand"
@@ -37,7 +37,7 @@ function CategoryPage({ treeServices, addOrUpdateService, updateCategory }) {
 				</AccordionSummary>
 				<AccordionDetails>
 					<MenuItemTable
-						menuItems={category.menuitems}
+						menuItems={category.menuItems}
 						category={category}
 						// addOrUpdateService={addOrUpdateService}
 					/>
@@ -45,7 +45,7 @@ function CategoryPage({ treeServices, addOrUpdateService, updateCategory }) {
 			</Accordion>
 		))
 	) : (
-		<div className="text-center">No Service found</div>
+		<div className="text-center">No Category found</div>
 	);
 }
 

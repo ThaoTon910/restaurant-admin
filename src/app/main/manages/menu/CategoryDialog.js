@@ -35,9 +35,9 @@ const schema = yup.object().shape({
 	name: yup.string().required('You must enter a name')
 });
 
-function ServiceCategorytDialog(props) {
+function CategorytDialog(props) {
 	const dispatch = useDispatch();
-	const dialog = useSelector(({ nailsApp }) => nailsApp.serviceCategories.dialog);
+	const dialog = useSelector(({ restaurantApp }) => restaurantApp.categories.dialog);
 
 	const { control, reset, handleSubmit, formState, getValues } = useForm({
 		mode: 'onChange',
@@ -83,8 +83,8 @@ function ServiceCategorytDialog(props) {
 	 */
 	function closeComposeDialog() {
 		return dialog.type === 'edit'
-			? dispatch(closeEditServiceCategoryDialog())
-			: dispatch(closeNewServiceCategoryDialog());
+			? dispatch(closeEditCategoryDialog())
+			: dispatch(closeNewCategoryDialog());
 	}
 
 	/**
@@ -92,9 +92,9 @@ function ServiceCategorytDialog(props) {
 	 */
 	function onSubmit(data) {
 		if (dialog.type === 'new') {
-			dispatch(addServiceCategory(data));
+			dispatch(addCategory(data));
 		} else {
-			dispatch(updateServiceCategory({ ...dialog.data, ...data }));
+			dispatch(updateCategory({ ...dialog.data, ...data }));
 		}
 		closeComposeDialog();
 	}
@@ -182,4 +182,4 @@ function ServiceCategorytDialog(props) {
 	);
 }
 
-export default ServiceCategorytDialog;
+export default CategorytDialog;
