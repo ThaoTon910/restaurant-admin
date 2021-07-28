@@ -52,6 +52,7 @@ eslint . --ext .js --ext .ts --fix
 ## setup
 ```bash
 npm install  --legacy-peer-deps
+npm run start
 ```
 
 ## Run chrome without Cors
