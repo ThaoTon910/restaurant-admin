@@ -1,4 +1,4 @@
-import CategoryConfig from './categories/categoryConfig';
+import CategoryConfig from './menu/categoryConfig';
 import FuseUtils from '../../../@fuse/utils';
 import { authRoles } from '../../auth';
 
