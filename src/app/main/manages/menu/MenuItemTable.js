@@ -13,17 +13,17 @@ import Icon from '@material-ui/core/Icon';
 export function MenuItemTable({ menuItems, category, addOrUpdateService }) {
 	const addNewService = ev => {
 		ev.stopPropagation();
-		addOrUpdateService({
-			type: 'add',
-			payload: { category }
-		});
+		// addOrUpdateService({
+		// 	type: 'add',
+		// 	payload: { category }
+		// });
 	};
 	const editService = (ev, service) => {
 		ev.stopPropagation();
-		addOrUpdateService({
-			type: 'edit',
-			payload: { service, category }
-		});
+		// addOrUpdateService({
+		// 	type: 'edit',
+		// 	payload: { service, category }
+		// });
 	};
 
 	return menuItems && menuItems.length ? (
