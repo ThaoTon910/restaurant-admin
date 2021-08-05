@@ -16,7 +16,7 @@ import CategoryPage from './CategoryPage';
 import { STORE_ACTION_SET_CONTENT_TOOLBAR_RIGHT, StoreContextDispatch, StoreContextProdiver } from '../context/StoreContext';
 import CategorytDialog from './CategoryDialog';
 import reducer from '../store';
-// import MenuItemDialog from './MenuItemDialog';
+import MenuItemDialog from './MenuItemDialog';
 
 function CategoryAddNewButton({ handleAddCategory }) {
 	return (
@@ -97,6 +97,7 @@ function CategoryPageLayout() {
 					updateCategory={updateCategory}
 				/>
 				<CategorytDialog />
+				<MenuItemDialog />
 				{/*<ServiceDialog />*/}
 			</>
 	// </StoreContextProdiver>

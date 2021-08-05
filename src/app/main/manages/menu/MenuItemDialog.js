@@ -15,7 +15,8 @@ import * as yup from 'yup';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar';
-import { updateService, addService, closeNewServiceDialog, closeEditServiceDialog } from './store/servicesSlice';
+//import { updateService, addService, closeNewServiceDialog, closeEditServiceDialog } from './store/servicesSlice';
+import {   closeEditMenuItemDialog, closeNewMenuItemDialog } from '../store/menuItemsSlice';
 
 const defaultValues = {
 	name: '',
@@ -37,8 +38,8 @@ const schema = yup.object().shape({
 
 function ServicetDialog(props) {
 	const dispatch = useDispatch();
-	const dialog = useSelector(({ nailsApp }) => nailsApp.services.dialog);
-
+	const dialog = useSelector(( state ) => state.restaurantApp.menuItems.dialog);
+   // console.log("Hello", dialog)
 	const { control, reset, handleSubmit, formState, getValues } = useForm({
 		mode: 'onChange',
 		defaultValues,
@@ -62,6 +63,7 @@ function ServicetDialog(props) {
 		 * Dialog type: 'new'
 		 */
 		if (dialog.type === 'new') {
+			
 			reset({
 				...defaultValues,
 				categoryId: dialog.data.category.id,
@@ -83,7 +85,7 @@ function ServicetDialog(props) {
 	 * Close Dialog
 	 */
 	function closeComposeDialog() {
-		return dialog.type === 'edit' ? dispatch(closeEditServiceDialog()) : dispatch(closeNewServiceDialog());
+		return dialog.type === 'edit' ? dispatch(closeEditMenuItemDialog()) : dispatch(closeNewMenuItemDialog());
 	}
 
 	/**
