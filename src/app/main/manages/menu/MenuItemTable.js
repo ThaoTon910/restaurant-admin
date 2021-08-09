@@ -9,7 +9,7 @@ import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import Icon from '@material-ui/core/Icon';
-import { openEditMenuItemDialog, openNewMenuItemDialog } from '../store/menuItemsSlice'
+import { openEditMenuItemDialog, openNewMenuItemDialog, deleteMenuItem } from '../store/menuItemsSlice'
 import { useDispatch } from 'react-redux';
 import { Storage } from 'aws-amplify';
 
@@ -41,7 +41,11 @@ export function MenuItemRow({ item, category }) {
 					>
 						<Icon>edit</Icon>
 					</IconButton>
-					<IconButton aria-label="delete service" className="px-5">
+					<IconButton 
+						aria-label="delete service" 
+						className="px-5"
+						onClick={() => dispatch(deleteMenuItem(item.id))}
+						>
 						<DeleteOutlinedIcon color="error" />
 					</IconButton>
 				</div>
@@ -57,11 +61,6 @@ export function MenuItemTable({ menuItems, category, addOrUpdateService }) {
 	const addNewService = ev => {
 		ev.stopPropagation();
 		dispatch(openNewMenuItemDialog({ category }))
-
-	};
-	const editService = (ev, service) => {
-		ev.stopPropagation();
-		dispatch(openEditMenuItemDialog(service))
 
 	};
 

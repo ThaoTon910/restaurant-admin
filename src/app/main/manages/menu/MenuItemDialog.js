@@ -55,7 +55,19 @@ function ServicetDialog(props) {
 		 * Dialog type: 'edit'
 		 */
 		if (dialog.type === 'edit' && dialog.data) {
-			reset({ ...dialog.data });
+
+			const {name, description, size, price, imageUrl} = dialog.data
+
+			reset({ 
+				name,
+				description,
+				size, 
+				price,
+				imageUrl,
+				categoryId: dialog.data.category.id,
+				storeId: dialog.data.category.storeId
+			});
+
 			if (dialog.data.imageUrl) {
 				Storage.get(dialog.data.imageUrl).then(url => setImage({ ...image, preview: url }))
 			}
@@ -110,17 +122,12 @@ function ServicetDialog(props) {
 		}))
 
 	} else {
-		const allValues = getValues();
-		const dirtyValues = Object.fromEntries(
-			Object.keys(dirtyFields)
-				.map(key => [key, allValues[key]])
-		);
-		if (image.dirty) {
-			dirtyValues.imageUrl = imageUrl
+		const updateData = {
+			...data,
+			imageUrl: image.dirty ? imageUrl : dialog.data.imageUrl
 		}
-		console.log(dirtyValues)
 		dispatch(updateMenuItem({
-			id: data.id, data: dirtyValues
+			id: dialog.data.id, data: updateData
 		}))
 	}
 
@@ -283,7 +290,7 @@ return (
 						variant="contained"
 						color="secondary"
 						type="submit"
-						disabled={_.isEmpty(dirtyFields) || !isValid}
+						disabled={(_.isEmpty(dirtyFields) && !image.dirty) || !isValid}
 					>
 						{dialog.type === 'new' ? 'Add' : 'Save'}
 					</Button>

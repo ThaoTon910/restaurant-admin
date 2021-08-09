@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
 import axios from 'axios';
 import restaurantService from '../../../services/restaurantService';
-
+import {deleteMenuItem, updateMenuItem} from './menuItemsSlice';
 
 export const getCategories = createAsyncThunk('restaurantApp/categories/getCategories', async () => {
 	const response = await restaurantService.getCategories();
@@ -109,7 +109,37 @@ const categoriesSlice = createSlice({
 		},
 		[addCategory.fulfilled]: categoriesAdapter.addOne,
 		[updateCategory.fulfilled]: categoriesAdapter.upsertOne,
-		[removeCategory.fulfilled]: (state, action) => categoriesAdapter.removeOne(state, action.payload)
+		[removeCategory.fulfilled]: (state, action) => categoriesAdapter.removeOne(state, action.payload),
+		[deleteMenuItem.fulfilled]: (state, action) => {
+			const {id, categoryId} = action.payload;
+			const oldMenuItems = state.entities[categoryId]?.menuItems;
+			if (!oldMenuItems) {return;}
+			const newMenuItems = oldMenuItems.filter(item => item.id !== id)
+
+			categoriesAdapter.updateOne(
+				state, 
+				{
+					id: categoryId,
+					changes: { menuItems: newMenuItems}
+				})
+		},
+		[updateMenuItem.fulfilled]: (state, action) => {
+			const {id, categoryId} = action.payload;
+			const oldMenuItems = state.entities[categoryId]?.menuItems;
+			if (!oldMenuItems) {return;}
+			const updatedIndex = oldMenuItems.findIndex(item => item.id === id);
+			const newMenuItems = [
+				...oldMenuItems.slice(0,updatedIndex),
+				action.payload,
+			   ...oldMenuItems.slice(updatedIndex+1)
+			   ]
+			categoriesAdapter.updateOne(
+				state, 
+				{
+					id: categoryId,
+					changes: { menuItems: newMenuItems}
+				})
+		}
 	}
 });
 

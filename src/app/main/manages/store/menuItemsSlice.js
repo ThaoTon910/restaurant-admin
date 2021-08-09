@@ -18,7 +18,12 @@ export const addMenuItem = createAsyncThunk('restaurantApp/menuItems/addMenuItem
 
 export const updateMenuItem = createAsyncThunk('restaurantApp/menuItems/updateMenuItem', async ({id, data}) => {
 	const response = await restaurantService.updateMenuItem(id, data);
-	console.log(response)
+	return response.data;
+})
+
+export const deleteMenuItem = createAsyncThunk('restaurantApp/menuItems/deleteMenuItem', async (id) => {
+	const response = await restaurantService.deleteMenuItem(id);
+	return response.data;
 })
 
 

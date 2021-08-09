@@ -84,9 +84,17 @@ class RestaurantService {
 
 	updateMenuItem = async (id, data) => {
 		const url = `${AUTH_CONFIG.apiUrl}/menu-item/${id}`;
-		console.log(`POSTING TO BACKEND URL: ${url} , Data: ${JSON.stringify(data)} `)
-		return "Yay"
-		// axios.put(url, data)
+		const postData = {
+			...data,
+			active: true
+		}
+		console.log(`POSTING TO BACKEND URL: ${url} , Data: ${JSON.stringify(postData)} `)
+		return axios.put(url, postData)
+	};
+
+	deleteMenuItem = async (id) => {
+		const url = `${AUTH_CONFIG.apiUrl}/menu-item/${id}`;
+		return axios.delete(url);
 	}
 
 }
