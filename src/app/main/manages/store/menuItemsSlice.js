@@ -11,6 +11,17 @@ export const getMenuItems = createAsyncThunk('restaurantApp/menuItems/getMenuIte
 });
 
 
+export const addMenuItem = createAsyncThunk('restaurantApp/menuItems/addMenuItem', async (data) => {
+	const response = await restaurantService.addMenuItem(data);
+	console.log(response)
+})
+
+export const updateMenuItem = createAsyncThunk('restaurantApp/menuItems/updateMenuItem', async ({id, data}) => {
+	const response = await restaurantService.updateMenuItem(id, data);
+	console.log(response)
+})
+
+
 const menuItemsAdapter = createEntityAdapter({});
 
 export const { selectAll: selectMenuItems, selectById: selectMenuItemById } = menuItemsAdapter.getSelectors(

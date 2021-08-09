@@ -16,6 +16,12 @@ import AppContext from './AppContext';
 import { Auth } from './auth';
 import routes from './fuse-configs/routesConfig';
 import store from './store';
+import Amplify from 'aws-amplify'
+import awsconfig from "../aws-exports";
+import {withAuthenticator, AmplifySignOut} from '@aws-amplify/ui-react';
+
+
+Amplify.configure(awsconfig)
 
 const jss = create({
 	...jssPreset(),
@@ -50,6 +56,7 @@ const App = () => {
 											}}
 										>
 											<FuseLayout />
+											<AmplifySignOut />
 										</SnackbarProvider>
 									</FuseTheme>
 								</FuseAuthorization>
@@ -62,4 +69,4 @@ const App = () => {
 	);
 };
 
-export default App;
+export default withAuthenticator(App);

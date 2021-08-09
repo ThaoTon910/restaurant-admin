@@ -4,6 +4,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import Icon from '@material-ui/core/Icon';
+import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
 import TextField from '@material-ui/core/TextField';
 import { useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -11,39 +12,37 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import _ from '@lodash';
 import * as yup from 'yup';
+import { v4 as uuid } from "uuid";
+
 
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar';
 //import { updateService, addService, closeNewServiceDialog, closeEditServiceDialog } from './store/servicesSlice';
-import {   closeEditMenuItemDialog, closeNewMenuItemDialog } from '../store/menuItemsSlice';
+import { Storage } from 'aws-amplify';
+import { addMenuItem, closeEditMenuItemDialog, closeNewMenuItemDialog, updateMenuItem } from '../store/menuItemsSlice';
+import { useState } from 'react';
+
 
 const defaultValues = {
 	name: '',
 	description: '',
-	duration: 30,
-	price: '',
+	size: '',
 	storeId: '',
-	categoryId: ''
+	price: '',
+	categoryId: '',
+	imageUrl: null
 };
 
-/**
- * Form Validation Schema
- */
-const schema = yup.object().shape({
-	name: yup.string().required('You must enter a name'),
-	duration: yup.number().required('You must enter a duration'),
-	price: yup.number().required('You must enter a price')
-});
+
 
 function ServicetDialog(props) {
 	const dispatch = useDispatch();
-	const dialog = useSelector(( state ) => state.restaurantApp.menuItems.dialog);
-   // console.log("Hello", dialog)
-	const { control, reset, handleSubmit, formState, getValues } = useForm({
+	const [image, setImage] = useState({ file: null, preview: "", dirty: false });
+	const dialog = useSelector((state) => state.restaurantApp.menuItems.dialog);
+	const { control, reset, handleSubmit, formState, getValues, setValue } = useForm({
 		mode: 'onChange',
 		defaultValues,
-		resolver: yupResolver(schema)
 	});
 
 	const { isValid, dirtyFields, errors } = formState;
@@ -56,14 +55,16 @@ function ServicetDialog(props) {
 		 * Dialog type: 'edit'
 		 */
 		if (dialog.type === 'edit' && dialog.data) {
-			reset({ ...dialog.data.service });
+			reset({ ...dialog.data });
+			if (dialog.data.imageUrl) {
+				Storage.get(dialog.data.imageUrl).then(url => setImage({ ...image, preview: url }))
+			}
 		}
 
 		/**
 		 * Dialog type: 'new'
 		 */
 		if (dialog.type === 'new') {
-			
 			reset({
 				...defaultValues,
 				categoryId: dialog.data.category.id,
@@ -91,149 +92,207 @@ function ServicetDialog(props) {
 	/**
 	 * Form Submit
 	 */
-	function onSubmit(data) {
-		if (dialog.type === 'new') {
-			dispatch(addService(data));
-		} else {
-			dispatch(updateService({ ...dialog.data, ...data }));
+	const onSubmit = async (data) => {
+		let imageUrl = "";
+		if (image.dirty) {
+			try {
+				const fileName = uuid()
+				const result = await Storage.put(fileName, image.file)
+			imageUrl = result.key
+		} catch (err) {
+			console.log(err)
 		}
-		closeComposeDialog();
+	}
+	if (dialog.type === 'new') {
+		dispatch(addMenuItem({
+			...data,
+			imageUrl
+		}))
+
+	} else {
+		const allValues = getValues();
+		const dirtyValues = Object.fromEntries(
+			Object.keys(dirtyFields)
+				.map(key => [key, allValues[key]])
+		);
+		if (image.dirty) {
+			dirtyValues.imageUrl = imageUrl
+		}
+		console.log(dirtyValues)
+		dispatch(updateMenuItem({
+			id: data.id, data: dirtyValues
+		}))
 	}
 
-	return (
-		<Dialog
-			classes={{
-				paper: 'm-24'
-			}}
-			{...dialog.props}
-			onClose={closeComposeDialog}
-			fullWidth
-			maxWidth="xs"
-		>
-			<AppBar position="static" elevation={0}>
-				<Toolbar className="flex w-full">
-					<Typography variant="subtitle1" color="inherit">
-						{dialog.type === 'new' ? 'New Service' : 'Edit Service'}
-					</Typography>
-				</Toolbar>
-				<div className="flex flex-col items-center justify-center pb-24">
-					<Typography variant="h6" color="inherit" className="pt-8">
-						{dialog.data && dialog.data.category && dialog.data.category.name}
-					</Typography>
+
+	closeComposeDialog();
+}
+
+function onImageUpload(event) {
+	console.log(event.target.files)
+	if (!event.target.files.length) {
+		return;
+	}
+	setImage({ file: event.target.files[0], preview: URL.createObjectURL(event.target.files[0]), dirty: true })
+}
+
+
+return (
+	<Dialog
+		classes={{
+			paper: 'm-24'
+		}}
+		{...dialog.props}
+		onClose={closeComposeDialog}
+		fullWidth
+		maxWidth="xs"
+	>
+		<AppBar position="static" elevation={0}>
+			<Toolbar className="flex w-full">
+				<Typography variant="subtitle1" color="inherit">
+					{dialog.type === 'new' ? 'New Service' : 'Edit Service'}
+				</Typography>
+			</Toolbar>
+			<div className="flex flex-col items-center justify-center pb-24">
+				<Typography variant="h6" color="inherit" className="pt-8">
+					{dialog.data && dialog.data.category && dialog.data.category.name}
+				</Typography>
+			</div>
+		</AppBar>
+		<form noValidate onSubmit={handleSubmit(onSubmit)} className="flex flex-col md:overflow-hidden">
+
+
+			<DialogContent classes={{ root: 'p-24' }}>
+				<div className="flex">
+					<div className="flex-1">
+
+						<input type="file" id="image-url" className="hidden" onChange={onImageUpload} />
+						<label htmlFor="image-url" className="text-7xl">
+							{image.preview && <img src={image.preview} alt="" />}
+							<AddAPhotoIcon fontSize="inherit" />
+						</label>
+					</div>
+
+					<div>
+
+						<div className="flex flex-1">
+							<div className="min-w-48 pt-20">
+								<Icon color="action">info</Icon>
+							</div>
+							<Controller
+								control={control}
+								name="name"
+								render={({ field }) => (
+									<TextField
+										{...field}
+										className="mb-24"
+										label="Name"
+										id="name"
+										autoComplete="off"
+										error={!!errors.name}
+										helperText={errors?.name?.message}
+										variant="outlined"
+										required
+										fullWidth
+									/>
+								)}
+							/>
+						</div>
+
+
+						<div className="flex">
+							<div className="min-w-48 pt-20">
+								<Icon color="action">info</Icon>
+							</div>
+							<Controller
+								control={control}
+								name="size"
+								render={({ field }) => (
+									<TextField
+										{...field}
+										className="mb-24"
+										label="Size"
+										id="size"
+										autoComplete="off"
+										error={!!errors.size}
+										helperText={errors?.size?.message}
+										variant="outlined"
+										required
+										fullWidth
+									/>
+								)}
+							/>
+						</div>
+
+
+						<div className="flex">
+							<div className="min-w-48 pt-20">
+								<Icon color="action">attach_money</Icon>
+							</div>
+							<Controller
+								control={control}
+								name="price"
+								render={({ field }) => (
+									<TextField
+										{...field}
+										className="mb-24"
+										label="Price"
+										id="price"
+										autoComplete="off"
+										onChange={e => field.onChange(parseFloat(e.target.value))}
+										error={!!errors.price}
+										helperText={errors?.price?.message}
+										variant="outlined"
+										required
+										fullWidth
+									/>
+								)}
+							/>
+						</div>
+
+						<div className="flex">
+							<div className="min-w-48 pt-20">
+								<Icon color="action">note</Icon>
+							</div>
+							<Controller
+								control={control}
+								name="description"
+								render={({ field }) => (
+									<TextField
+										{...field}
+										className="mb-24"
+										label="Description"
+										id="description"
+										variant="outlined"
+										multiline
+										rows={5}
+										fullWidth
+									/>
+								)}
+							/>
+						</div>
+					</div>
 				</div>
-			</AppBar>
-			<form noValidate onSubmit={handleSubmit(onSubmit)} className="flex flex-col md:overflow-hidden">
-				<DialogContent classes={{ root: 'p-24' }}>
-					<div className="flex">
-						<div className="min-w-48 pt-20">
-							<Icon color="action">info</Icon>
-						</div>
-						<Controller
-							control={control}
-							name="name"
-							render={({ field }) => (
-								<TextField
-									{...field}
-									className="mb-24"
-									label="Name"
-									id="name"
-									autoComplete="off"
-									error={!!errors.name}
-									helperText={errors?.name?.message}
-									variant="outlined"
-									required
-									fullWidth
-								/>
-							)}
-						/>
-					</div>
 
-					<div className="flex">
-						<div className="min-w-48 pt-20">
-							<Icon color="action">schedule</Icon>
-						</div>
-						<Controller
-							control={control}
-							name="duration"
-							render={({ field }) => (
-								<TextField
-									{...field}
-									className="mb-24"
-									label="Duration (minutes)"
-									id="duration"
-									autoComplete="off"
-									error={!!errors.duration}
-									helperText={errors?.duration?.message}
-									variant="outlined"
-									required
-									fullWidth
-								/>
-							)}
-						/>
-					</div>
 
-					<div className="flex">
-						<div className="min-w-48 pt-20">
-							<Icon color="action">attach_money</Icon>
-						</div>
-						<Controller
-							control={control}
-							name="price"
-							render={({ field }) => (
-								<TextField
-									{...field}
-									className="mb-24"
-									label="Price"
-									id="price"
-									autoComplete="off"
-									error={!!errors.price}
-									helperText={errors?.price?.message}
-									variant="outlined"
-									required
-									fullWidth
-								/>
-							)}
-						/>
-					</div>
-
-					<div className="flex">
-						<div className="min-w-48 pt-20">
-							<Icon color="action">note</Icon>
-						</div>
-						<Controller
-							control={control}
-							name="description"
-							render={({ field }) => (
-								<TextField
-									{...field}
-									className="mb-24"
-									label="Description"
-									id="description"
-									variant="outlined"
-									multiline
-									rows={5}
-									fullWidth
-								/>
-							)}
-						/>
-					</div>
-					<DialogActions className="justify-between p-4 pb-16">
-						<Button variant="contained" color="default" onClick={closeComposeDialog}>
-							Cancel
+				<DialogActions className="justify-between p-4 pb-16">
+					<Button variant="contained" color="default" onClick={closeComposeDialog}>
+						Cancel
 						</Button>
-						<Button
-							variant="contained"
-							color="secondary"
-							type="submit"
-							disabled={_.isEmpty(dirtyFields) || !isValid}
-						>
-							{dialog.type === 'new' ? 'Add' : 'Save'}
-						</Button>
-					</DialogActions>
-				</DialogContent>
-			</form>
-		</Dialog>
-	);
+					<Button
+						variant="contained"
+						color="secondary"
+						type="submit"
+						disabled={_.isEmpty(dirtyFields) || !isValid}
+					>
+						{dialog.type === 'new' ? 'Add' : 'Save'}
+					</Button>
+				</DialogActions>
+
+			</DialogContent>
+		</form>
+	</Dialog>
+);
 }
 
 export default ServicetDialog;

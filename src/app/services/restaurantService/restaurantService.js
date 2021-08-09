@@ -70,6 +70,25 @@ class RestaurantService {
 		// });
 	};
 
+	addMenuItem = (data) => {
+		const url = `${AUTH_CONFIG.apiUrl}/menu-item`;
+		const itemData = {
+			...data,
+			active: true,
+			isTaxable: true,
+			taxRate: 0
+		}
+		return axios.post(url, itemData);
+
+	};
+
+	updateMenuItem = async (id, data) => {
+		const url = `${AUTH_CONFIG.apiUrl}/menu-item/${id}`;
+		console.log(`POSTING TO BACKEND URL: ${url} , Data: ${JSON.stringify(data)} `)
+		return "Yay"
+		// axios.put(url, data)
+	}
+
 }
 
 const instance = new RestaurantService();
