@@ -9,6 +9,11 @@ const CategoryConfig = {
 			routes: [
 
 			]
+		},
+
+		{
+			path: '/manage/addons',
+			component: lazy(() => import('app/main/manages/menu/addons/AddonPageLayout'))
 		}
 	]
 };

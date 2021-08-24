@@ -11,7 +11,6 @@ import {
 	openNewCategoryDialog,
 	openEditCategoryDialog
 } from '../store/categoriesSlice';
-import { openNewMenuItemDialog, getMenuItems, selectMenuItems, openEditMenuItemDialog } from '../store/menuItemsSlice';
 import CategoryPage from './CategoryPage';
 import { STORE_ACTION_SET_CONTENT_TOOLBAR_RIGHT, StoreContextDispatch, StoreContextProdiver } from '../context/StoreContext';
 import CategorytDialog from './CategoryDialog';
@@ -35,17 +34,6 @@ function CategoryPageLayout() {
 	const isCategoriesLoading = useSelector(({ restaurantApp }) => restaurantApp.categories.loading);
 	const categories = useSelector(selectCategories);
 
-	// const addOrUpdateService = useCallback(
-	// 	({ type, payload }) => {
-	// 		if (type === 'add') {
-	// 			dispatch(openNewMenuItemDialog(payload));
-	// 		} else {
-	// 			dispatch(openEditServiceDialog(payload));
-	// 		}
-	// 	},
-	// 	[dispatch]
-	// );
-
 	const updateCategory = useCallback(
 		({ payload }) => {
 			dispatch(openEditCategoryDialog(payload));
@@ -58,23 +46,23 @@ function CategoryPageLayout() {
 	}, [dispatch]);
 
 	useEffect(() => {
-		if (!isCategoriesLoading) {
-			// storeContextDispatch({
-			// 	type: STORE_ACTION_SET_CONTENT_TOOLBAR_RIGHT,
-			// 	payload: CategoryAddNewButton({
-			// 		handleAddCategory: () => {
-			// 			// dispatch(openNewServiceCategoryDialog({ storeId: routeParams.storeId }));
-			// 		}
-			// 	})
-			// });
-		}
-		return () => {
-			// Clean up when leaving the page
-			// storeContextDispatch({
-			// 	type: STORE_ACTION_SET_CONTENT_TOOLBAR_RIGHT,
-			// 	payload: null
-			// });
-		};
+		// if (!isCategoriesLoading) {
+		// 	storeContextDispatch({
+		// 		type: STORE_ACTION_SET_CONTENT_TOOLBAR_RIGHT,
+		// 		payload: CategoryAddNewButton({
+		// 			handleAddCategory: () => {
+		// 				// dispatch(openNewServiceCategoryDialog({ storeId: routeParams.storeId }));
+		// 			}
+		// 		})
+		// 	});
+		// }
+		// return () => {
+		// 	// Clean up when leaving the page
+		// 	storeContextDispatch({
+		// 		type: STORE_ACTION_SET_CONTENT_TOOLBAR_RIGHT,
+		// 		payload: null
+		// 	});
+		// };
 	}, [
 		isCategoriesLoading,
 		categories,
@@ -84,7 +72,6 @@ function CategoryPageLayout() {
 
 	return(
 
-	// <StoreContextProdiver>
 		isCategoriesLoading ? (
 			<div className="text-center">
 				<CircularProgress size={20} className="ml-10" color="secondary" />
@@ -93,14 +80,11 @@ function CategoryPageLayout() {
 			<>
 				<CategoryPage
 					treeServices={categories}
-					// addOrUpdateService={addOrUpdateService}
 					updateCategory={updateCategory}
 				/>
 				<CategorytDialog />
 				<MenuItemDialog />
-				{/*<ServiceDialog />*/}
 			</>
-	// </StoreContextProdiver>
 	))
 }
 export default withReducer('restaurantApp', reducer)(CategoryPageLayout);

@@ -5,14 +5,14 @@ class RestaurantService {
 
 	getCategories = () => {
 		// return new Promise((resolve, reject) => {
-			const url = `${AUTH_CONFIG.apiUrl}/category`;
+		const url = `${AUTH_CONFIG.apiUrl}/category`;
 
-			return axios.get(url, {
-				headers: {
-					'Content-Type': 'application/json'
-					// Authorization: `Bearer ${this.getAccessToken()}`
-				}
-			});
+		return axios.get(url, {
+			headers: {
+				'Content-Type': 'application/json'
+				// Authorization: `Bearer ${this.getAccessToken()}`
+			}
+		});
 		// });
 	};
 
@@ -88,14 +88,40 @@ class RestaurantService {
 			...data,
 			active: true
 		}
-		console.log(`POSTING TO BACKEND URL: ${url} , Data: ${JSON.stringify(postData)} `)
 		return axios.put(url, postData)
 	};
 
 	deleteMenuItem = async (id) => {
 		const url = `${AUTH_CONFIG.apiUrl}/menu-item/${id}`;
 		return axios.delete(url);
-	}
+	};
+
+	getAddonGroups = () => {
+		const url = `${AUTH_CONFIG.apiUrl}/addon-group`;
+
+		return axios.get(url, {
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+	};
+
+	addAddon = (data) => {
+		const url = `${AUTH_CONFIG.apiUrl}/addon`;
+
+		return axios.post(url, data);
+	};
+
+	updateAddon = (id, data) => {
+		const url = `${AUTH_CONFIG.apiUrl}/addon/${id}`;
+		return axios.put(url, data);
+	};
+
+	deleteAddon = async (id) => {
+		const url = `${AUTH_CONFIG.apiUrl}/addon/${id}`;
+		return axios.delete(url);
+	};
+
 
 }
 
