@@ -1,9 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 import withReducer from 'app/store/withReducer';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { motion } from 'framer-motion';
 import Button from '@material-ui/core/Button';
+import FusePageCarded from '@fuse/core/FusePageCarded';
 import { useDeepCompareEffect } from '../../../../@fuse/hooks';
 import {
 	getCategories,
@@ -26,6 +27,7 @@ function CategoryAddNewButton({ handleAddCategory }) {
 		</motion.div>
 	);
 }
+
 
 function CategoryPageLayout() {
 	const dispatch = useDispatch();
@@ -70,21 +72,38 @@ function CategoryPageLayout() {
 		storeContextDispatch
 	]);
 
-	return(
+	return (
+		<FusePageCarded
 
-		isCategoriesLoading ? (
-			<div className="text-center">
-				<CircularProgress size={20} className="ml-10" color="secondary" />
-			</div>
-		) : (
-			<>
-				<CategoryPage
-					treeServices={categories}
-					updateCategory={updateCategory}
-				/>
-				<CategorytDialog />
-				<MenuItemDialog />
-			</>
-	))
+			header={
+				<div className="flex items-center">
+					<h1>Pho 28</h1>
+				</div>
+			}
+			contentToolbar={
+				<div className="px-24">
+					<h4>Categories</h4>
+				</div>
+			}
+			content={
+				<div className="p-24">
+					{isCategoriesLoading ? (
+						<div className='text-center'>
+							<CircularProgress size={20} className='ml-10' color='secondary' />
+						</div>
+					) : (
+						<>
+							<CategoryPage
+								treeServices={categories}
+								updateCategory={updateCategory}
+							/>
+							<CategorytDialog />
+							<MenuItemDialog />
+						</>
+					)}
+				</div>
+			}
+		/>
+	);
 }
 export default withReducer('restaurantApp', reducer)(CategoryPageLayout);
