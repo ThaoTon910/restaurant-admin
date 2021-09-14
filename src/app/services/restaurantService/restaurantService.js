@@ -122,6 +122,23 @@ class RestaurantService {
 		return axios.delete(url);
 	};
 
+	getMerchant = () => {
+		// return new Promise((resolve, reject) => {
+		const url = `${AUTH_CONFIG.apiUrl}/merchant`;
+
+		return axios.get(url, {
+			headers: {
+				'Content-Type': 'application/json'
+				// Authorization: `Bearer ${this.getAccessToken()}`
+			}
+		});
+		// });
+	};
+
+	updateMerchant = data => {
+		const url = `${AUTH_CONFIG.apiUrl}/merchant`;
+		return axios.put(url, data);
+	};
 
 }
 

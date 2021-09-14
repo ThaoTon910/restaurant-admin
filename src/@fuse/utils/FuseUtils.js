@@ -396,6 +396,10 @@ class FuseUtils {
 					return list;
 			  }, []);
 	}
+	static formatHour(hour) {
+		const time = new Date(`1970-01-01T${hour}Z`);
+		return time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true, timeZone: 'UTC' });
+	}
 }
 
 export default FuseUtils;

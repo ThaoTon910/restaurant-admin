@@ -5,6 +5,14 @@ const ManageNavigation = {
 	icon: 'star',
 	children: [
 		{
+			id: 'about',
+			title: 'About',
+			type: 'item',
+			icon: 'info',
+			url: '/manage/about',
+			exact: false
+		},
+		{
 			id: 'categories',
 			title: 'Category',
 			type: 'item',
