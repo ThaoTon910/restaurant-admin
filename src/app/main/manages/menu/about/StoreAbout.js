@@ -11,6 +11,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableContainer from '@material-ui/core/TableContainer';
 import FuseUtils from '@fuse/utils';
+import restaurantService from 'app/services/restaurantService';
+
 // import { selectStoresById } from '../store/storesSlice';
 // import { StoreContextDispatch, STORE_ACTION_SET_HEADER_RIGHT } from '../context/StoreContext';
 
@@ -25,55 +27,16 @@ function StoreEditButton({ path }) {
 }
 
 function StoreAbout({ location, history, match }) {
-	const [selectedStore, setSelectedStore] = useState({
-		address: 'my address',
-		phone: 'my phone',
-		name: 'My Store',
-		hours: [
-			{
-				day: 'Monday',
-				end: '22:00:00',
-				start: '09:00:00',
-				off: false
-			},
-			{
-				day: 'Tuesday',
-				end: '22:00:00',
-				start: '09:00:00',
-				off: false
-			},
-			{
-				day: 'Wednesday',
-				end: '22:00:00',
-				start: '09:00:00',
-				off: false
-			},
-			{
-				day: 'Thursday',
-				end: '22:00:00',
-				start: '09:00:00',
-				off: false
-			},
-			{
-				day: 'Friday',
-				end: '22:00:00',
-				start: '09:00:00',
-				off: false
-			},
-			{
-				day: 'Saturday',
-				end: '22:00:00',
-				start: '09:00:00',
-				off: false
-			},
-			{
-				day: 'Sunday',
-				end: '22:00:00',
-				start: '09:00:00',
-				off: false
-			}
-		]
-	});
+	const [selectedStore, setSelectedStore] = useState(null);
+	// restaurantService.getMerchant();
+	useEffect(() => {
+		restaurantService.getMerchant().then(response => {
+			// console.log("merchant ", response);
+			setSelectedStore(response.data)
+		})
+
+	}, [])
+
 
 	// const storeContextDispatch = useContext(StoreContextDispatch);
 	// const { storeId } = match.params;
@@ -128,7 +91,7 @@ function StoreAbout({ location, history, match }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{selectedStore.hours.map((hourDay, id) => (
+						{selectedStore.hours && selectedStore.hours.map((hourDay, id) => (
 							<TableRow key={id}>
 								<TableCell>{hourDay.day}</TableCell>
 								<TableCell>{hourDay.off ? '-' : FuseUtils.formatHour(hourDay.start)}</TableCell>
