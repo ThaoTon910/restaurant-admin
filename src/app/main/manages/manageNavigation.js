@@ -28,6 +28,14 @@ const ManageNavigation = {
 			icon: 'info',
 			url: '/manage/addons',
 			exact: false
+		},
+		{
+			id: 'orders',
+			title: 'Order',
+			type: 'item',
+			icon: 'info',
+			url: '/manage/orders',
+			exact: false
 		}
 	]
 };

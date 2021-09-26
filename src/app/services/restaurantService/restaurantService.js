@@ -140,6 +140,32 @@ class RestaurantService {
 		return axios.put(url, data);
 	};
 
+	getOrders = () => {
+		// return new Promise((resolve, reject) => {
+		const url = `${AUTH_CONFIG.apiUrl}/order`;
+
+		return axios.get(url, {
+			headers: {
+				'Content-Type': 'application/json'
+				// Authorization: `Bearer ${this.getAccessToken()}`
+			}
+		});
+		// });
+	};
+
+	getOrderById = (id) => {
+		// return new Promise((resolve, reject) => {
+		const url = `${AUTH_CONFIG.apiUrl}/order/${id}`;
+
+		return axios.get(url, {
+			headers: {
+				'Content-Type': 'application/json'
+				// Authorization: `Bearer ${this.getAccessToken()}`
+			}
+		});
+		// });
+	};
+
 }
 
 const instance = new RestaurantService();

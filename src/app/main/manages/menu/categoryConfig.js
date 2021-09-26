@@ -17,7 +17,15 @@ const CategoryConfig = {
 		{
 			path: '/manage/addons',
 			component: lazy(() => import('app/main/manages/menu/addons/AddonPageLayout'))
-		}
+		},
+		{
+			path: '/manage/orders/:orderId',
+			component: lazy(() => import('app/main/manages/menu/order/Order'))
+		},
+		{
+			path: '/manage/orders',
+			component: lazy(() => import('app/main/manages/menu/orders/Orders'))
+		},
 
 
 	]

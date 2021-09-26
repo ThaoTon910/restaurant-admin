@@ -16,7 +16,7 @@ function AboutPageLayout(){
 			}
 			contentToolbar={
 				<div className="px-24">
-					<h4>Addons</h4>
+					<h4>About</h4>
 				</div>
 			}
 			content={
