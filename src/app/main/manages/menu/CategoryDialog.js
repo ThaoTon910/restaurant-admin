@@ -24,15 +24,15 @@ import {
 
 const defaultValues = {
 	name: '',
-	description: '',
-	storeId: ''
+	index: 0
 };
 
 /**
  * Form Validation Schema
  */
 const schema = yup.object().shape({
-	name: yup.string().required('You must enter a name')
+	name: yup.string().required('You must enter a name'),
+	index: yup.number().required('You must enter an index')
 });
 
 function CategorytDialog(props) {
@@ -91,10 +91,11 @@ function CategorytDialog(props) {
 	 * Form Submit
 	 */
 	function onSubmit(data) {
+		console.log(data)
 		if (dialog.type === 'new') {
 			dispatch(addCategory(data));
 		} else {
-			dispatch(updateCategory({ ...dialog.data, ...data }));
+			dispatch(updateCategory({ id: dialog.data.id, data }));
 		}
 		closeComposeDialog();
 	}
@@ -144,20 +145,22 @@ function CategorytDialog(props) {
 
 					<div className="flex">
 						<div className="min-w-48 pt-20">
-							<Icon color="action">note</Icon>
+							<Icon color="action">info</Icon>
 						</div>
 						<Controller
 							control={control}
-							name="description"
+							name="index"
 							render={({ field }) => (
 								<TextField
 									{...field}
 									className="mb-24"
-									label="Description"
-									id="description"
+									label="Index"
+									id="index"
+									autoComplete="off"
+									error={!!errors.index}
+									helperText={errors?.index?.message}
 									variant="outlined"
-									multiline
-									rows={5}
+									required
 									fullWidth
 								/>
 							)}

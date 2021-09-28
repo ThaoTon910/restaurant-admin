@@ -16,20 +16,35 @@ import { STORE_ACTION_SET_CONTENT_TOOLBAR_RIGHT, StoreContextDispatch, StoreCont
 import CategorytDialog from './CategoryDialog';
 import reducer from '../store';
 import MenuItemDialog from './MenuItemDialog';
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
+import FusePageSimple from '@fuse/core/FusePageSimple'
 
-function CategoryAddNewButton({ handleAddCategory }) {
+function CategoryAddNewButton() {
+	const dispatch = useDispatch();
+	const onAddClick = () => {
+		dispatch(openNewCategoryDialog())
+	}
 	return (
 		<motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0, transition: { delay: 0.2 } }}>
-			<Button className="whitespace-nowrap" variant="contained" color="secondary" onClick={handleAddCategory}>
-				<span className="flex">Add New</span>
-			</Button>
+			<Fab color="secondary" aria-label="add" onClick={onAddClick}>
+				<AddIcon />
+			</Fab>
 		</motion.div>
 	);
 }
 
+function CategoryPageHeader() {
+	return (
+		<div>
+			<h1>MENU</h1>
+			<CategoryAddNewButton />
+		</div>
+	)
+}
+
 function CategoryPageLayout() {
 	const dispatch = useDispatch();
-	const storeContextDispatch = useContext(StoreContextDispatch);
 
 	const isCategoriesLoading = useSelector(({ restaurantApp }) => restaurantApp.categories.loading);
 	const categories = useSelector(selectCategories);
@@ -45,46 +60,31 @@ function CategoryPageLayout() {
 		dispatch(getCategories());
 	}, [dispatch]);
 
-	useEffect(() => {
-		// if (!isCategoriesLoading) {
-		// 	storeContextDispatch({
-		// 		type: STORE_ACTION_SET_CONTENT_TOOLBAR_RIGHT,
-		// 		payload: CategoryAddNewButton({
-		// 			handleAddCategory: () => {
-		// 				// dispatch(openNewServiceCategoryDialog({ storeId: routeParams.storeId }));
-		// 			}
-		// 		})
-		// 	});
-		// }
-		// return () => {
-		// 	// Clean up when leaving the page
-		// 	storeContextDispatch({
-		// 		type: STORE_ACTION_SET_CONTENT_TOOLBAR_RIGHT,
-		// 		payload: null
-		// 	});
-		// };
-	}, [
-		isCategoriesLoading,
-		categories,
-		dispatch,
-		storeContextDispatch
-	]);
 
-	return(
+	return (
+	
+		<FusePageSimple
+			header={<CategoryPageHeader />}
+			content={
+				isCategoriesLoading ? (
+					<div className="text-center">
+						<CircularProgress size={20} className="ml-10" color="secondary" />
+					</div>
+				) : (
+					<>
+						<CategoryPage
+							treeServices={categories}
+							updateCategory={updateCategory}
+						/>
+						<CategorytDialog />
+						<MenuItemDialog />
+					</>
 
-		isCategoriesLoading ? (
-			<div className="text-center">
-				<CircularProgress size={20} className="ml-10" color="secondary" />
-			</div>
-		) : (
-			<>
-				<CategoryPage
-					treeServices={categories}
-					updateCategory={updateCategory}
-				/>
-				<CategorytDialog />
-				<MenuItemDialog />
-			</>
-	))
+				)
+			}
+		/>
+
+	)
+
 }
 export default withReducer('restaurantApp', reducer)(CategoryPageLayout);

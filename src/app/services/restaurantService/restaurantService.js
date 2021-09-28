@@ -16,45 +16,23 @@ class RestaurantService {
 		// });
 	};
 
-	addCategory = (category) => {
+	addCategory = (data) => {
 		// return new Promise((resolve, reject) => {
 		const url = `${AUTH_CONFIG.apiUrl}/category`;
+		return axios.post(url, data);
 
-		return axios.post(url, {
-			headers: {
-				'Content-Type': 'application/json'
-				// Authorization: `Bearer ${this.getAccessToken()}`
-			},
-			data: category
-		});
-		// });
 	};
 
-	updateCategory = (id, category) => {
+	updateCategory = (id, data) => {
 		// return new Promise((resolve, reject) => {
 		const url = `${AUTH_CONFIG.apiUrl}/category/${id}`;
-
-		return axios.put(url, {
-			headers: {
-				'Content-Type': 'application/json'
-				// Authorization: `Bearer ${this.getAccessToken()}`
-			},
-			data: category
-		});
-		// });
+		return axios.put(url, data);
 	};
 
-	removeCategory = (id) => {
-		// return new Promise((resolve, reject) => {
+	deleteCategory = (id) => {
 		const url = `${AUTH_CONFIG.apiUrl}/category/${id}`;
 
-		return axios.delete(url, {
-			headers: {
-				'Content-Type': 'application/json'
-				// Authorization: `Bearer ${this.getAccessToken()}`
-			},
-		});
-		// });
+		return axios.delete(url);
 	};
 
 	getMenuItems = () => {
@@ -104,6 +82,22 @@ class RestaurantService {
 				'Content-Type': 'application/json'
 			}
 		});
+	};
+
+	addAddonGroup = (data) => {
+		const url = `${AUTH_CONFIG.apiUrl}/addon-group`;
+
+		return axios.post(url, data);
+	};
+
+	updateAddonGroup = (id, data) => {
+		const url = `${AUTH_CONFIG.apiUrl}/addon-group/${id}`;
+		return axios.put(url, data);
+	};
+
+	deleteAddonGroup = async (id) => {
+		const url = `${AUTH_CONFIG.apiUrl}/addon-group/${id}`;
+		return axios.delete(url);
 	};
 
 	addAddon = (data) => {

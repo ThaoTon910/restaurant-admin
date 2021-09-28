@@ -5,9 +5,15 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
-import { MenuItemTable } from './MenuItemTable';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 
-function CategoryPage({ treeServices, addOrUpdateService, updateCategory }) {
+import { MenuItemTable } from './MenuItemTable';
+import { useDispatch } from 'react-redux';
+import { removeCategory } from '../store/categoriesSlice';
+
+function CategoryPage({ treeServices, updateCategory }) {
+	const dispatch = useDispatch();
+
 	return treeServices.length ? (
 		treeServices.map((category, index) => (
 			<Accordion key={index}>
@@ -23,13 +29,24 @@ function CategoryPage({ treeServices, addOrUpdateService, updateCategory }) {
 							<IconButton
 								aria-label="edit service"
 								className="px-10"
-								color="primary"
+								color="secondary"
 								onClick={ev => {
 									ev.stopPropagation();
 									updateCategory({ payload: category });
 								}}
 							>
 								<Icon>edit</Icon>
+							</IconButton>
+
+							<IconButton
+								aria-label="edit service"
+								className="px-10"
+								onClick={ev => {
+									ev.stopPropagation();
+									dispatch(removeCategory(category.id))
+								}}
+							>
+								<DeleteOutlinedIcon color="error"/>
 							</IconButton>
 						</div>
 						{category.description && <Typography color="textSecondary">{category.description}</Typography>}
@@ -39,7 +56,6 @@ function CategoryPage({ treeServices, addOrUpdateService, updateCategory }) {
 					<MenuItemTable
 						menuItems={category.menuItems}
 						category={category}
-						// addOrUpdateService={addOrUpdateService}
 					/>
 				</AccordionDetails>
 			</Accordion>

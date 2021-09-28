@@ -164,6 +164,7 @@ const FusePageSimple = forwardRef((props, ref) => {
 
 	return (
 		<div className={clsx(classes.root, props.innerScroll && classes.innerScroll)} ref={rootRef}>
+			<h1>HELLOO</h1>
 			<div className={clsx(classes.header, classes.topBg)} />
 
 			<div className="flex flex-auto flex-col container z-10 h-full">

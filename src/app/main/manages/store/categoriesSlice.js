@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
-import axios from 'axios';
 import restaurantService from '../../../services/restaurantService';
 import {addMenuItem, deleteMenuItem, updateMenuItem} from './menuItemsSlice';
 
@@ -13,31 +12,25 @@ export const getCategories = createAsyncThunk('restaurantApp/categories/getCateg
 
 export const addCategory = createAsyncThunk(
 	'restaurantApp/categories/addCategory',
-	async (category, { dispatch, getState }) => {
-		const response = await restaurantService.addCategory(category);
-		const data = await response.data;
-
-		return data;
+	async (data) => {
+		const response = await restaurantService.addCategory(data);
+		return response.data;
 	}
 );
 
 export const updateCategory = createAsyncThunk(
 	'restaurantApp/categories/updateCategory',
-	async (category, { dispatch, getState }) => {
-		const response = await restaurantService.updateCategory(category.id, category)
-		const data = await response.data;
-
-		return data;
+	async ({id, data}) => {
+		const response = await restaurantService.updateCategory(id, data)
+		return response.data;
 	}
 );
 
 export const removeCategory = createAsyncThunk(
 	'restaurantApp/categories/deleteCategory',
-	async (category, { dispatch, getState }) => {
-		const response = await restaurantService.deleteCategory(category.id)
-		const data = await response.data;
-
-		return data;
+	async (id) => {
+		const response = await restaurantService.deleteCategory(id)
+		return response.data;
 	}
 );
 
@@ -109,7 +102,7 @@ const categoriesSlice = createSlice({
 		},
 		[addCategory.fulfilled]: categoriesAdapter.addOne,
 		[updateCategory.fulfilled]: categoriesAdapter.upsertOne,
-		[removeCategory.fulfilled]: (state, action) => categoriesAdapter.removeOne(state, action.payload),
+		[removeCategory.fulfilled]: (state, action) => categoriesAdapter.removeOne(state, action.payload.id),
 
 		[addMenuItem.fulfilled]: (state, action) => {
 			const {id, categoryId} = action.payload;

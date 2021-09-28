@@ -8,15 +8,30 @@ export const getAddonGroups = createAsyncThunk('restaurantApp/addons/getAddonGro
     return data;
 });
 
+export const addAddonGroup = createAsyncThunk('restaurantApp/addons/addAddonGroup', async (data) => {
+    const response = await restaurantService.addAddonGroup(data);
+    console.log(response)
+    return response.data;
+})
+
+export const updateAddonGroup = createAsyncThunk('restaurantApp/addons/updateAddonGroup', async ({ id, data }) => {
+    const response = await restaurantService.updateAddonGroup(id, data);
+    console.log(response)
+    return response.data;
+})
+
+export const deleteAddonGroup = createAsyncThunk('restaurantApp/addons/deleteAddonGroup', async (id) => {
+	const response = await restaurantService.deleteAddonGroup(id);
+	return response.data;
+})
+
 export const addAddon = createAsyncThunk('restaurantApp/addons/addAddon', async (data) => {
     const response = await restaurantService.addAddon(data);
-    console.log(response)
     return response.data;
 })
 
 export const updateAddon = createAsyncThunk('restaurantApp/addons/updateAddon', async ({ id, data }) => {
     const response = await restaurantService.updateAddon(id, data);
-    console.log(response)
     return response.data;
 })
 
@@ -87,6 +102,37 @@ const addonSlice = createSlice({
                 },
                 data: null
             }
+        },
+        openNewAddonGroupDialog: (state, action) => {
+            state.groupDialog = {
+                type: 'new',
+                props: {
+                    open: true
+                },
+                data: {
+                    addonGroupId: action.payload
+                }
+            }
+        },
+
+        openEditAddonGroupDialog: (state, action) => {
+            state.groupDialog = {
+                type: 'edit',
+                props: {
+                    open: true
+                },
+                data: action.payload
+            }
+        },
+
+        closeAddonGroupDialog: (state) => {
+            state.groupDialog = {
+                type: 'edit',
+                props: {
+                    open: false
+                },
+                data: null
+            }
         }
 
     },
@@ -96,6 +142,10 @@ const addonSlice = createSlice({
             addonGroupAdapter.setAll(state, data);
             state.loading = false;
         },
+        [addAddonGroup.fulfilled]: addonGroupAdapter.addOne,
+		[updateAddonGroup.fulfilled]: addonGroupAdapter.upsertOne,
+		[removeAddonGroup.fulfilled]: (state, action) => addonGroupAdapter.removeOne(state, action.payload.id),
+
 
         [addAddon.fulfilled]: (state, action) => {
             const { id, addonGroupId } = action.payload;
@@ -151,7 +201,11 @@ export const {
     setLoading,
     openNewAddonItemDialog,
     openEditAddonItemDialog,
-    closeAddonItemDialog
+    closeAddonItemDialog,
+    openNewAddonGroupDialog,
+    openEditAddonGroupDialog,
+    closeAddonGroupDialog,
+
 } = addonSlice.actions;
 
 export default addonSlice.reducer;

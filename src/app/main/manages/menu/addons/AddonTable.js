@@ -87,7 +87,7 @@ export function AddonTable({ addonGroup }) {
 	) : (
 		<div className="flex items-center justify-between w-full">
 			<div>No service found</div>
-			<IconButton className="text-green-500 pr-0" onClick={addNewService}>
+			<IconButton className="text-green-500 pr-0" onClick={() => {}}>
 				<Icon>add_circle</Icon>
 			</IconButton>
 		</div>
