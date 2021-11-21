@@ -28,9 +28,9 @@ function Logo() {
 
 	return (
 		<div className={clsx(classes.root, 'flex items-center')}>
-			<img className="logo-icon w-24 h-24" src="assets/images/logos/fuse.svg" alt="logo" />
+			<img className="logo-icon w-24 h-24" src="assets/images/logos/26.jpg" alt="logo" />
 			<Typography className="text-16 leading-none mx-12 font-medium logo-text" color="inherit">
-				Pho28
+				Pho26
 			</Typography>
 			{/*<div className={clsx(classes.reactBadge, 'react-badge flex items-center py-4 px-8 rounded')}>*/}
 			{/*	<img*/}

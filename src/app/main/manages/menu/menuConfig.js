@@ -26,6 +26,7 @@ const MenuConfig = {
 			path: '/manage/orders',
 			component: lazy(() => import('app/main/manages/menu/orders/Orders'))
 		},
+		{
 			path: '/manage', // handle invalid route
 			component: () => <Redirect to="/manage/about" />
 		}
