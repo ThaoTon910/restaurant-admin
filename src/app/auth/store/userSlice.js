@@ -204,7 +204,7 @@ const initialState = {
 	data: {
 		displayName: 'Guess',
 		photoURL: 'assets/images/avatars/Velazquez.jpg',
-		email: 'johndoe@withinpixels.com',
+		email: '',
 		shortcuts: ['calendar', 'mail', 'contacts', 'todo']
 	}
 };

@@ -21,7 +21,7 @@ export function AuthRightPanel() {
 			<div className="max-w-320">
 				<motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.2 } }}>
 					<Typography variant="h3" color="inherit" className="font-semibold leading-tight">
-						Welcome to Pho26
+						Welcome to Pho28
 					</Typography>
 				</motion.div>
 

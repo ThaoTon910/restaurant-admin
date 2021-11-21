@@ -94,7 +94,7 @@ const InvoiceTab = props => {
 							</div>
 
 							{/*<div className={clsx(classes.seller, 'flex items-center p-16')}>*/}
-							{/*	<img className="w-80" src="assets/images/logos/fuse.svg" alt="logo" />*/}
+							{/*	<img className="w-80" src="assets/images/logos/logo.jpg" alt="logo" />*/}
 
 							{/*	<div className={clsx(classes.divider, 'divider mx-8 h-96')} />*/}
 
@@ -220,7 +220,7 @@ const InvoiceTab = props => {
 
 							<div className="flex">
 								<div className="flex-shrink-0">
-									{/*<img className="w-32" src="assets/images/logos/fuse.svg" alt="logo" />*/}
+									{/*<img className="w-32" src="assets/images/logos/logo.jpg" alt="logo" />*/}
 								</div>
 
 								<Typography className="font-normal mb-64 px-24" variant="caption" color="textSecondary">
