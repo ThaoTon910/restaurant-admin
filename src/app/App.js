@@ -1,4 +1,4 @@
-import '../@fake-db'; // TODO: remove after implement authentication
+import '@fake-db'; // TODO: remove after implement authentication
 import FuseAuthorization from '@fuse/core/FuseAuthorization';
 import FuseLayout from '@fuse/core/FuseLayout';
 import FuseTheme from '@fuse/core/FuseTheme';
