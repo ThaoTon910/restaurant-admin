@@ -15,42 +15,20 @@ import Tooltip from '@material-ui/core/Tooltip';
 import clsx from 'clsx';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { removeOrders } from '../../store/ordersSlice';
 
 const rows = [
 	{
-		id: 'id',
+		id: 'num',
 		align: 'left',
 		disablePadding: false,
-		label: 'ID',
+		label: 'Order Number',
 		sort: true
 	},
-	// {
-	// 	id: 'reference',
-	// 	align: 'left',
-	// 	disablePadding: false,
-	// 	label: 'Reference',
-	// 	sort: true
-	// },
 	{
 		id: 'customer',
 		align: 'left',
 		disablePadding: false,
 		label: 'Customer',
-		sort: true
-	},
-	{
-		id: 'total',
-		align: 'right',
-		disablePadding: false,
-		label: 'Total',
-		sort: true
-	},
-	{
-		id: 'payment',
-		align: 'left',
-		disablePadding: false,
-		label: 'Payment',
 		sort: true
 	},
 	{
@@ -61,10 +39,18 @@ const rows = [
 		sort: true
 	},
 	{
-		id: 'date',
+		id: 'created',
 		align: 'left',
 		disablePadding: false,
-		label: 'Date',
+		label: 'Order Date',
+		sort: true
+	},
+
+	{
+		id: 'updated',
+		align: 'left',
+		disablePadding: false,
+		label: 'Updated Date',
 		sort: true
 	}
 ];

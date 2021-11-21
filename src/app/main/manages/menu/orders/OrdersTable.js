@@ -14,15 +14,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import FuseLoading from '@fuse/core/FuseLoading';
 import OrdersStatus from '../order/OrdersStatus';
-import { selectOrders, getOrders } from '../../store/ordersSlice';
+import { selectOrders, getOrders, isLoading } from '../../store/orderSlice';
 import OrdersTableHead from './OrdersTableHead';
+import { getCategories } from '../../store/categoriesSlice';
+import { getAddonGroups } from '../../store/addonSlice';
+
+import moment from 'moment';
 
 function OrdersTable(props) {
 	const dispatch = useDispatch();
 	const orders = useSelector(selectOrders);
-	const searchText = useSelector(({ restaurantApp }) => restaurantApp.orders.searchText);
+	const loading = useSelector(isLoading);
+	const searchText = "";
 
-	const [loading, setLoading] = useState(true);
 	const [selected, setSelected] = useState([]);
 	const [data, setData] = useState(orders);
 	const [page, setPage] = useState(0);
@@ -33,7 +37,9 @@ function OrdersTable(props) {
 	});
 
 	useEffect(() => {
-		dispatch(getOrders()).then(() => setLoading(false));
+		dispatch(getOrders());
+		dispatch(getCategories());
+		dispatch(getAddonGroups());
 	}, [dispatch]);
 
 	useEffect(() => {
@@ -137,9 +143,7 @@ function OrdersTable(props) {
 							[
 								o => {
 									switch (order.id) {
-										case 'id': {
-											return parseInt(o.id, 10);
-										}
+									
 										case 'customer': {
 											return o.customer.firstName;
 										}
@@ -179,26 +183,15 @@ function OrdersTable(props) {
 											/>
 										</TableCell>
 
+									
 										<TableCell className="p-4 md:p-16" component="th" scope="row">
-											{n.id}
+											{n.id.substring(0, 4)}
 										</TableCell>
-
-										{/*<TableCell className="p-4 md:p-16" component="th" scope="row">*/}
-										{/*	{n.reference}*/}
-										{/*</TableCell>*/}
 
 										<TableCell className="p-4 md:p-16 truncate" component="th" scope="row">
 											{`${n.customer.firstName} ${n.customer.lastName}`}
 										</TableCell>
 
-										<TableCell className="p-4 md:p-16" component="th" scope="row" align="right">
-											<span>$</span>
-											{/*{n.total}*/}
-										</TableCell>
-
-										<TableCell className="p-4 md:p-16" component="th" scope="row">
-											{/*{n.payment.method}*/}
-										</TableCell>
 
 										<TableCell className="p-4 md:p-16" component="th" scope="row">
 											{/*<OrdersStatus name={n.status[0].name} />*/}
@@ -207,7 +200,11 @@ function OrdersTable(props) {
 										</TableCell>
 
 										<TableCell className="p-4 md:p-16" component="th" scope="row">
-											{/*{n.date}*/}
+											{moment(n.createdTime).format('MMMM Do YYYY, h:mm:ss a')}
+										</TableCell>
+
+										<TableCell className="p-4 md:p-16" component="th" scope="row">
+											{moment(n.updatedTime).format('MMMM Do YYYY, h:mm:ss a')}
 										</TableCell>
 									</TableRow>
 								);

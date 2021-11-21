@@ -1,7 +1,7 @@
-import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
+import { createSlice, createSelector, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
 import axios from 'axios';
 import restaurantService from '../../../services/restaurantService';
-
+import {selectCategories} from 'app/main/manages/store/categoriesSlice';
 
 export const getMenuItems = createAsyncThunk('restaurantApp/menuItems/getMenuItems', async () => {
 	const response = await restaurantService.getMenuItems();
@@ -29,9 +29,7 @@ export const deleteMenuItem = createAsyncThunk('restaurantApp/menuItems/deleteMe
 
 const menuItemsAdapter = createEntityAdapter({});
 
-export const { selectAll: selectMenuItems, selectById: selectMenuItemById } = menuItemsAdapter.getSelectors(
-	state => state.restaurantApp.menuItems
-);
+
 
 const menuItemsSlice = createSlice({
 	name: 'restaurantApp/MenuItems',

@@ -135,6 +135,16 @@ class RestaurantService {
 		// });
 	};
 
+	getMerchantById = (id) => {
+		const url = `${AUTH_CONFIG.apiUrl}/merchant/${id}`;
+		return axios.get(url, {
+			headers: {
+				'Content-Type': 'application/json'
+				// Authorization: `Bearer ${this.getAccessToken()}`
+			}
+		});
+	}
+
 	updateMerchant = data => {
 		const url = `${AUTH_CONFIG.apiUrl}/merchant`;
 		return axios.put(url, data);
@@ -153,17 +163,9 @@ class RestaurantService {
 		// });
 	};
 
-	getOrderById = (id) => {
-		// return new Promise((resolve, reject) => {
+	updateOrderStatus = (id, data) => {
 		const url = `${AUTH_CONFIG.apiUrl}/order/${id}`;
-
-		return axios.get(url, {
-			headers: {
-				'Content-Type': 'application/json'
-				// Authorization: `Bearer ${this.getAccessToken()}`
-			}
-		});
-		// });
+		return axios.put(url, data);
 	};
 
 }

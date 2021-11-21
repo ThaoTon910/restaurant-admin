@@ -7,9 +7,11 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import GoogleMap from 'google-map-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import OrdersStatus from '../OrdersStatus';
+import restaurantService from 'app/services/restaurantService';
+import moment from 'moment';
 
 function Marker(props) {
 	return (
@@ -19,9 +21,53 @@ function Marker(props) {
 	);
 }
 
-function OrderDetailsTab() {
-	const order = useSelector(({ restaurantApp }) => restaurantApp.order);
+function PickupDetails(props) {
+	const {time, merchantId} = props;
+	const [merchant, setMerchant] = useState(null);
+	useEffect(() => {
+		restaurantService.getMerchant().then(response => {
+			setMerchant(response.data);
+		})
+
+	}, [])
+	return (
+
+		<div className="table-responsive">
+		<table className="simple">
+			<thead>
+				<tr>
+					<th>
+						<Typography className="font-semibold">Pickup time</Typography>
+					</th>
+					<th>
+						<Typography className="font-semibold">Store Address</Typography>
+					</th>
+				
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<span className="truncate">{moment(time).format('MMMM Do YYYY, h:mm:ss a')}</span>
+					</td>
+					<td>
+						<span className="truncate">{merchant ? merchant.address : "Unavailable"}</span>
+					</td>
+
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	)
+}
+
+
+function OrderDetailsTab(props) {
+	const {order} = props;
 	const [map, setMap] = useState('shipping');
+	const subtotal = order.items.reduce((item, total) => {
+		return total + item.price;
+	}, 0)
 
 	return (
 		<div>
@@ -47,16 +93,14 @@ function OrderDetailsTab() {
 									<th>
 										<Typography className="font-semibold">Phone</Typography>
 									</th>
-									<th>
-										<Typography className="font-semibold">Company</Typography>
-									</th>
+									
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
 									<td>
 										<div className="flex items-center">
-											<Avatar src={order.customer.avatar} />
+											{/* <Avatar src={order.customer.avatar} /> */}
 											<Typography className="truncate mx-8">
 												{`${order.customer.firstName} ${order.customer.lastName}`}
 											</Typography>
@@ -68,85 +112,15 @@ function OrderDetailsTab() {
 									<td>
 										<Typography className="truncate">{order.customer.phone}</Typography>
 									</td>
-									<td>
-										<span className="truncate">{order.customer.company}</span>
-									</td>
+									
 								</tr>
 							</tbody>
 						</table>
 					</div>
 
-					<Accordion
-						className="border-0 shadow-0 overflow-hidden"
-						expanded={map === 'shipping'}
-						onChange={() => setMap(map !== 'shipping' ? 'shipping' : false)}
-					>
-						<AccordionSummary
-							expandIcon={<ExpandMoreIcon />}
-							classes={{ root: 'border border-solid rounded-16 mb-16' }}
-						>
-							<Typography className="font-semibold">Shipping Address</Typography>
-						</AccordionSummary>
-						<AccordionDetails className="flex flex-col md:flex-row -mx-8">
-							{/*<Typography className="w-full md:max-w-256 mb-16 md:mb-0 mx-8 text-16">*/}
-							{/*	/!*{order.customer.shippingAddress.address}*!/*/}
-							{/*</Typography>*/}
-							{/*<div className="w-full h-320 rounded-16 overflow-hidden mx-8">*/}
-							{/*	<GoogleMap*/}
-							{/*		bootstrapURLKeys={{*/}
-							{/*			key: process.env.REACT_APP_MAP_KEY*/}
-							{/*		}}*/}
-							{/*		defaultZoom={15}*/}
-							{/*		defaultCenter={[*/}
-							{/*			order.customer.shippingAddress.lat,*/}
-							{/*			order.customer.shippingAddress.lng*/}
-							{/*		]}*/}
-							{/*	>*/}
-							{/*		<Marker*/}
-							{/*			text={order.customer.shippingAddress.address}*/}
-							{/*			lat={order.customer.shippingAddress.lat}*/}
-							{/*			lng={order.customer.shippingAddress.lng}*/}
-							{/*		/>*/}
-							{/*	</GoogleMap>*/}
-							{/*</div>*/}
-						</AccordionDetails>
-					</Accordion>
+					
 
-					<Accordion
-						className="shadow-0 border-0 overflow-hidden"
-						expanded={map === 'invoice'}
-						onChange={() => setMap(map !== 'invoice' ? 'invoice' : false)}
-					>
-						<AccordionSummary
-							expandIcon={<ExpandMoreIcon />}
-							classes={{ root: 'border border-solid rounded-16 mb-16' }}
-						>
-							<Typography className="font-semibold">Invoice Address</Typography>
-						</AccordionSummary>
-						{/*<AccordionDetails className="flex flex-col md:flex-row -mx-8">*/}
-						{/*	<Typography className="w-full md:max-w-256 mb-16 md:mb-0 mx-8 text-16">*/}
-						{/*		{order.customer.invoiceAddress.address}*/}
-						{/*	</Typography>*/}
-						{/*	<div className="w-full h-320 rounded-16 overflow-hidden mx-8">*/}
-						{/*		<GoogleMap*/}
-						{/*			bootstrapURLKeys={{*/}
-						{/*				key: process.env.REACT_APP_MAP_KEY*/}
-						{/*			}}*/}
-						{/*			defaultZoom={15}*/}
-						{/*			defaultCenter={[*/}
-						{/*				order.customer.invoiceAddress.lat,*/}
-						{/*				order.customer.invoiceAddress.lng*/}
-						{/*			]}*/}
-						{/*		>*/}
-						{/*			<Marker*/}
-						{/*				text={order.customer.invoiceAddress.address}*/}
-						{/*				lat={order.customer.invoiceAddress.lat}*/}
-						{/*				lng={order.customer.invoiceAddress.lng}*/}
-						{/*			/>*/}
-						{/*		</GoogleMap>*/}
-						{/*	</div>*/}
-						{/*</AccordionDetails>*/}
-					</Accordion>
+				
 				</div>
 			</div>
 
@@ -170,7 +144,10 @@ function OrderDetailsTab() {
 								</th>
 							</tr>
 						</thead>
-						{/*<tbody>*/}
+						<tbody>
+							<td>
+								<OrdersStatus name={order.status} />
+							</td>
 						{/*	{order.status.map(status => (*/}
 						{/*		<tr key={status}>*/}
 						{/*			<td>*/}
@@ -179,7 +156,7 @@ function OrderDetailsTab() {
 						{/*			<td>{status}</td>*/}
 						{/*		</tr>*/}
 						{/*	))}*/}
-						{/*</tbody>*/}
+						</tbody>
 					</table>
 				</div>
 			</div>
@@ -230,59 +207,21 @@ function OrderDetailsTab() {
 				</div>
 			</div>
 
-			<div className="pb-48">
-				<div className="pb-16 flex items-center">
+			{order.delivery.info.deliveryType == 'pickup' && (
+				<div className="pb-48">
+					<div className="pb-16 flex items-center">
 					<Icon color="action">local_shipping</Icon>
 					<Typography className="h2 mx-12 font-medium" color="textSecondary">
-						Shipping
+						Pickup
 					</Typography>
+					</div>
+					<PickupDetails 
+						time={order.delivery.info.time} 
+						merchantId={order.delivery.info.merchantId} /> 
+					
 				</div>
-
-				<div className="table-responsive">
-					<table className="simple">
-						<thead>
-							<tr>
-								<th>
-									<Typography className="font-semibold">Tracking Code</Typography>
-								</th>
-								<th>
-									<Typography className="font-semibold">Carrier</Typography>
-								</th>
-								<th>
-									<Typography className="font-semibold">Weight</Typography>
-								</th>
-								<th>
-									<Typography className="font-semibold">Fee</Typography>
-								</th>
-								<th>
-									<Typography className="font-semibold">Date</Typography>
-								</th>
-							</tr>
-						</thead>
-						{/*<tbody>*/}
-						{/*	{order.shippingDetails.map(shipping => (*/}
-						{/*		<tr key={shipping.date}>*/}
-						{/*			<td>*/}
-						{/*				<span className="truncate">{shipping.tracking}</span>*/}
-						{/*			</td>*/}
-						{/*			<td>*/}
-						{/*				<span className="truncate">{shipping.carrier}</span>*/}
-						{/*			</td>*/}
-						{/*			<td>*/}
-						{/*				<span className="truncate">{shipping.weight}</span>*/}
-						{/*			</td>*/}
-						{/*			<td>*/}
-						{/*				<span className="truncate">{shipping.fee}</span>*/}
-						{/*			</td>*/}
-						{/*			<td>*/}
-						{/*				<span className="truncate">{shipping.date}</span>*/}
-						{/*			</td>*/}
-						{/*		</tr>*/}
-						{/*	))}*/}
-						{/*</tbody>*/}
-					</table>
-				</div>
-			</div>
+			)}
+			
 		</div>
 	);
 }

@@ -1,10 +1,20 @@
+import { useTheme } from '@material-ui/core/styles';
 import FusePageCarded from '@fuse/core/FusePageCarded';
 import Button from '@material-ui/core/Button';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
 import Icon from '@material-ui/core/Icon';
-import { useTheme } from '@material-ui/core/styles';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 import withReducer from 'app/store/withReducer';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
@@ -12,67 +22,85 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import { useDeepCompareEffect } from '@fuse/hooks';
 import reducer from '../../store';
-import { resetOrder, getOrder } from '../../store/orderSlice';
+import { getOrderById, updateOrderStatus } from '../../store/orderSlice';
 import InvoiceTab from './tabs/InvoiceTab';
 import OrderDetailsTab from './tabs/OrderDetailsTab';
 import ProductsTab from './tabs/ProductsTab';
+import ItemsTab from './tabs/ItemsTab';
+
+
+function OrderStatusControl({onChange, value}) {
+
+	return (
+		<div class="flex items-center">
+			<Typography className="text-16 sm:text-20 truncate font-semibold mr-8">
+				{`Status: `}
+			</Typography>
+			<Select
+				labelId="demo-simple-select-label"
+				id="demo-simple-select"
+				value={value}
+				label="Age"
+				variant="outlined"
+				onChange={onChange}
+			>
+				<MenuItem value={"pending"}>Pending</MenuItem>
+				<MenuItem value={"completed"}>Completed</MenuItem>
+				<MenuItem value={"canceled"}>Canceled</MenuItem>
+			</Select>
+		</div>
+	)
+}
+
+
+function Order404() {
+	return (
+		<motion.div
+			initial={{ opacity: 0 }}
+			animate={{ opacity: 1, transition: { delay: 0.1 } }}
+			className="flex flex-col flex-1 items-center justify-center h-full"
+		>
+			<Typography color="textSecondary" variant="h5">
+				There is no such order!
+			</Typography>
+			<Button
+				className="mt-24"
+				component={Link}
+				variant="outlined"
+				to="/manage/orders"
+				color="inherit"
+			>
+				Go to Orders Page
+			</Button>
+		</motion.div>
+	);
+}
 
 function Order(props) {
 	const dispatch = useDispatch();
-	const order = useSelector(({ restaurantApp }) => restaurantApp.order);
 	const theme = useTheme();
-	console.log("small order")
 	const routeParams = useParams();
+	const order = useSelector(getOrderById(routeParams.orderId))
 	const [tabValue, setTabValue] = useState(0);
-	const [noOrder, setNoOrder] = useState(false);
 
-	useDeepCompareEffect(() => {
-		dispatch(getOrder(routeParams)).then(action => {
-			if (!action.payload) {
-				setNoOrder(true);
-			}
-		});
-	}, [dispatch, routeParams]);
-
-	useEffect(() => {
-		return () => {
-			dispatch(resetOrder());
-			setNoOrder(false);
-		};
-	}, [dispatch]);
 
 	function handleChangeTab(event, value) {
 		setTabValue(value);
 	}
 
-	if (noOrder) {
-		return (
-			<motion.div
-				initial={{ opacity: 0 }}
-				animate={{ opacity: 1, transition: { delay: 0.1 } }}
-				className="flex flex-col flex-1 items-center justify-center h-full"
-			>
-				<Typography color="textSecondary" variant="h5">
-					There is no such order!
-				</Typography>
-				<Button
-					className="mt-24"
-					component={Link}
-					variant="outlined"
-					to="/apps/e-commerce/orders"
-					color="inherit"
-				>
-					Go to Orders Page
-				</Button>
-			</motion.div>
-		);
+	function onOrderStatusChange(status) {
+		dispatch(updateOrderStatus({ id: order.id, status }));
+	}
+
+	if (!order) {
+		return <Order404 />
 	}
 
 	return (
 		<FusePageCarded
 			classes={{
 				content: 'flex',
-				header: 'min-h-72 h-72 sm:h-136 sm:min-h-136'
+				header: 'min-h-72 h-72 sm:h-200 sm:min-h-200'
 			}}
 			header={
 				order && (
@@ -86,7 +114,7 @@ function Order(props) {
 									className="flex items-center sm:mb-12"
 									component={Link}
 									role="button"
-									to="/apps/e-commerce/orders"
+									to="/manage/orders"
 									color="inherit"
 								>
 									<Icon className="text-20">
@@ -102,7 +130,12 @@ function Order(props) {
 									animate={{ x: 0, opacity: 1, transition: { delay: 0.3 } }}
 								>
 									<Typography className="text-16 sm:text-20 truncate font-semibold">
-										{`Order ${order.reference}`}
+										{`Order ${order.id.substring(0, 4)}`}
+									</Typography>
+									
+									<OrderStatusControl value={order.status} onChange={event => onOrderStatusChange(event.target.value)}/>
+									<Typography className="text-16 sm:text-20 truncate font-semibold">
+										{`${order.items.length} items`}
 									</Typography>
 									<Typography variant="caption" className="font-medium">
 										{`From ${order.customer.firstName} ${order.customer.lastName}`}
@@ -123,19 +156,21 @@ function Order(props) {
 					scrollButtons="auto"
 					classes={{ root: 'w-full h-64' }}
 				>
-					<Tab className="h-64" label="Order Details" />
-					<Tab className="h-64" label="Products" />
-					<Tab className="h-64" label="Invoice" />
+					<Tab className="h-64" label="Items" />
+					<Tab className="h-64" label="Details" />
+					{/* <Tab className="h-64" label="Products" />
+					<Tab className="h-64" label="Invoice" /> */}
 				</Tabs>
 			}
 			content={
-				order && (
-					<div className="p-16 sm:p-24 max-w-2xl w-full">
-						{tabValue === 0 && <OrderDetailsTab />}
-						{tabValue === 1 && <ProductsTab />}
-						{tabValue === 2 && <InvoiceTab order={order} />}
-					</div>
-				)
+				// <p>
+				// 	{order.items.map(item => <OrderItem item={item} />)}
+				// </p>
+				<div className="p-16 sm:p-24 max-w-2xl w-full">
+					{tabValue === 0 && <ItemsTab order={order} />}
+					{tabValue === 1 && <OrderDetailsTab order={order} />}
+				</div>
+
 			}
 			innerScroll
 		/>
