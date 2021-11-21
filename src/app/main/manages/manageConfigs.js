@@ -1,7 +1,7 @@
-import CategoryConfig from './menu/categoryConfig';
+import MenuConfig from './menu/menuConfig';
 import FuseUtils from '../../../@fuse/utils';
 import { authRoles } from '../../auth';
 
-const manageConfigs = [CategoryConfig];
+const manageConfigs = [MenuConfig];
 
 export default FuseUtils.addAuthToConfigs(manageConfigs, authRoles.staff);

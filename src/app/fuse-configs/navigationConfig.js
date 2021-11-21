@@ -22,7 +22,6 @@ const navigationConfig = [
 			}
 		]
 	},
-	ManageNavigation
 ];
 
 export default navigationConfig;

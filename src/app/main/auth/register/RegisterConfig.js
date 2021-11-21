@@ -1,7 +1,7 @@
 import { authRoles } from 'app/auth';
-import Login from './Login';
+import Register from './Register';
 
-const LoginConfig = {
+const RegisterConfig = {
 	settings: {
 		layout: {
 			config: {
@@ -26,10 +26,10 @@ const LoginConfig = {
 	auth: authRoles.onlyGuest,
 	routes: [
 		{
-			path: '/login',
-			component: Login
+			path: '/auth/register',
+			component: Register
 		}
 	]
 };
 
-export default LoginConfig;
+export default RegisterConfig;

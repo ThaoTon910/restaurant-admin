@@ -56,7 +56,6 @@ const App = () => {
 											}}
 										>
 											<FuseLayout />
-											<AmplifySignOut />
 										</SnackbarProvider>
 									</FuseTheme>
 								</FuseAuthorization>
@@ -69,4 +68,4 @@ const App = () => {
 	);
 };
 
-export default withAuthenticator(App);
+export default App;
