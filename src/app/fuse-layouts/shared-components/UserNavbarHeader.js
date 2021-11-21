@@ -45,7 +45,7 @@ function UserNavbarHeader(props) {
 				{user.data.displayName}
 			</Typography>
 			<Typography className="email text-13 opacity-50 whitespace-nowrap font-medium" color="inherit">
-				{user.data.email}
+				{user.data.displayName !== user.data.email && user.data.email }
 			</Typography>
 			<div className="flex items-center justify-center absolute bottom-0 -mb-44">
 				<Avatar

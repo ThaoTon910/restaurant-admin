@@ -202,7 +202,7 @@ const initialState = {
 	roles: [], // guest
 	groups: [],
 	data: {
-		displayName: 'John Doe',
+		displayName: 'Guess',
 		photoURL: 'assets/images/avatars/Velazquez.jpg',
 		email: 'johndoe@withinpixels.com',
 		shortcuts: ['calendar', 'mail', 'contacts', 'todo']
