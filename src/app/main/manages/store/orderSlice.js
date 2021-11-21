@@ -1,33 +1,70 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-import restaurantService from '../../../services/restaurantService';
+import { createSlice, createAsyncThunk, createEntityAdapter, createSelector } from '@reduxjs/toolkit';
+import restaurantService from 'app/services/restaurantService';
 
-export const getOrder = createAsyncThunk('restaurantApp/order/getOrder', async params => {
-	const response = await await restaurantService.getOrderById(params.orderId);
-	const data = await response.data;
 
-	return data === undefined ? null : data;
-});
-
-export const saveOrder = createAsyncThunk('restaurantApp/order/saveOrder', async order => {
-	const response = await axios.post('/api/e-commerce-app/order/save', order);
-	const data = await response.data;
-
+export const getOrders = createAsyncThunk('restaurantApp/order/getOrders', async () => {
+	const response = await restaurantService.getOrders();
+	const data = response.data;
 	return data;
 });
 
-const orderSlice = createSlice({
-	name: 'restaurantApp/order',
-	initialState: null,
-	reducers: {
-		resetOrder: () => null
-	},
-	extraReducers: {
-		[getOrder.fulfilled]: (state, action) => action.payload,
-		[saveOrder.fulfilled]: (state, action) => action.payload
-	}
+export const updateOrderStatus = createAsyncThunk('restaurantApp/order/updateOrderStatus', async ({id, status}) => {
+	const response = await restaurantService.updateOrderStatus(id, {status});
+	const data = response.data;
+	return data;
+
 });
 
-export const { resetOrder } = orderSlice.actions;
+const orderAdapter = createEntityAdapter({});
+
+export const { selectAll: selectOrders, selectById: selectOrderById } = orderAdapter.getSelectors(
+	state => state.restaurantApp.order
+);
+
+export const isLoading = state => state.restaurantApp.order.loading
+
+export const getOrderByParam = createSelector(
+	selectOrders,
+	(_, props) => props,
+	(orders, props) => {
+		console.log(props);
+		return orders;
+	}
+)
+
+export const getOrderById = (id) => (state) => {
+	return selectOrderById(state, id)
+}
+
+const orderSlice = createSlice({
+	name: 'restaurantApp/order',
+
+	initialState: orderAdapter.getInitialState({
+		loading: false,
+	}),
+	reducers: {
+		setLoading: (state, action) => {
+			state.loading = action.payload;
+		},
+	},
+	extraReducers: {
+		[getOrders.pending]: (state) => {
+			state.loading = true;
+		},
+
+		[getOrders.fulfilled]: (state, action) => {
+			const data = action.payload;
+			orderAdapter.setAll(state, data);
+			state.loading = false;
+		},
+
+		[updateOrderStatus.fulfilled]: orderAdapter.upsertOne,
+	}
+
+});
+
+export const {
+	setOrder
+} = orderSlice.actions;
 
 export default orderSlice.reducer;
