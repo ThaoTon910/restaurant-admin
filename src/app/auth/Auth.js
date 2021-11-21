@@ -6,6 +6,7 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from '@reduxjs/toolkit';
 import { hideMessage, showMessage } from 'app/store/fuse/messageSlice';
+import cognitoService from 'app/services/cognitoService';
 
 import { setUserDataFirebase, setUserDataAuth0, setUserData, logoutUser } from './store/userSlice';
 
@@ -19,16 +20,59 @@ class Auth extends Component {
 			// Comment the lines which you do not use
 			// this.firebaseCheck(),
 			// this.auth0Check(),
-			this.jwtCheck()
+			// this.jwtCheck(),
+			this.cognitoCheck()
 		]).then(() => {
 			this.setState({ waitAuthCheck: false });
 		});
 	}
 
+	cognitoCheck = () => {
+		/* eslint-disable no-new */
+		new Promise(resolve => {
+			cognitoService.on('onAutoLogin', () => {
+				// this.props.showMessage({ message: 'Logging in with JWT' });
+
+				/**
+				 * Sign in and retrieve user data from Api
+				 */
+				cognitoService
+					.getCurrentAuthenticatedUser()
+					.then(user => {
+						this.props.setUserData(cognitoService.generateAppUserData(user));
+						resolve();
+					})
+					.catch(error => {
+						this.props.showMessage({ message: error.message });
+						resolve();
+					});
+			});
+
+			cognitoService.on('onAutoLogout', message => {
+				if (message) {
+					this.props.showMessage({ message });
+				}
+
+				this.props.logout();
+
+				resolve();
+			});
+
+			cognitoService.on('onNoAccessToken', () => {
+				resolve();
+			});
+
+			cognitoService.init();
+			// cognitoService.handleAuthentication();
+
+			return Promise.resolve();
+		});
+	};
+
 	jwtCheck = () =>
 		new Promise(resolve => {
 			jwtService.on('onAutoLogin', () => {
-				this.props.showMessage({ message: 'Logging in with JWT' });
+				// this.props.showMessage({ message: 'Logging in with JWT' });
 
 				/**
 				 * Sign in and retrieve user data from Api
@@ -40,7 +84,7 @@ class Auth extends Component {
 
 						resolve();
 
-						this.props.showMessage({ message: 'Logged in with JWT' });
+						// this.props.showMessage({ message: 'Logged in with JWT' });
 					})
 					.catch(error => {
 						this.props.showMessage({ message: error.message });

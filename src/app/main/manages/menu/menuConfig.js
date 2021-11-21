@@ -1,7 +1,7 @@
 import { lazy } from 'react';
 import { Redirect } from 'react-router-dom';
 
-const CategoryConfig = {
+const MenuConfig = {
 	routes: [
 		{
 			path: '/manage/about',
@@ -26,9 +26,10 @@ const CategoryConfig = {
 			path: '/manage/orders',
 			component: lazy(() => import('app/main/manages/menu/orders/Orders'))
 		},
-
-
+			path: '/manage', // handle invalid route
+			component: () => <Redirect to="/manage/about" />
+		}
 	]
 };
 
-export default CategoryConfig;
+export default MenuConfig;

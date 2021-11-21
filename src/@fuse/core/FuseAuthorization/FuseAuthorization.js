@@ -53,7 +53,7 @@ class FuseAuthorization extends Component {
         */
 		if (!userRole || userRole.length === 0) {
 			history.push({
-				pathname: '/login',
+				pathname: '/auth/login',
 				state: { redirectUrl: pathname }
 			});
 		} else {
@@ -76,7 +76,7 @@ class FuseAuthorization extends Component {
 
 function mapStateToProps({ auth }) {
 	return {
-		userRole: auth.user.role
+		userRole: auth.user.roles
 	};
 }
 

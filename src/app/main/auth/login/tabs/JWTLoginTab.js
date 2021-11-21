@@ -42,7 +42,7 @@ function JWTLoginTab(props) {
 	const [showPassword, setShowPassword] = useState(false);
 
 	useEffect(() => {
-		setValue('email', 'admin@pho28.com', { shouldDirty: true, shouldValidate: true });
+		setValue('email', 'admin@fusetheme.com', { shouldDirty: true, shouldValidate: true });
 		setValue('password', 'admin', { shouldDirty: true, shouldValidate: true });
 	}, [reset, setValue, trigger]);
 
@@ -158,7 +158,7 @@ function JWTLoginTab(props) {
 							</Typography>
 						</td>
 						<td>
-							<Typography className="text-11">admin@pho28.com</Typography>
+							<Typography className="text-11">admin@fusetheme.com</Typography>
 						</td>
 						<td>
 							<Typography className="text-11">admin</Typography>
@@ -171,7 +171,7 @@ function JWTLoginTab(props) {
 							</Typography>
 						</td>
 						<td>
-							<Typography className="text-11">staff@pho28.com</Typography>
+							<Typography className="text-11">staff@fusetheme.com</Typography>
 						</td>
 						<td>
 							<Typography className="text-11">staff</Typography>
