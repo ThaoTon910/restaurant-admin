@@ -69,6 +69,8 @@ function OrderDetailsTab(props) {
 		return total + item.price;
 	}, 0)
 
+	console.log(order);
+
 	return (
 		<div>
 			<div className="pb-48">
@@ -148,6 +150,9 @@ function OrderDetailsTab(props) {
 							<td>
 								<OrdersStatus name={order.status} />
 							</td>
+							<td>
+							<span className="truncate">{moment(order.updatedTime).format('MMMM Do YYYY, h:mm:ss a')}</span>
+							</td>
 						{/*	{order.status.map(status => (*/}
 						{/*		<tr key={status}>*/}
 						{/*			<td>*/}
@@ -177,37 +182,37 @@ function OrderDetailsTab(props) {
 									<Typography className="font-semibold">TransactionID</Typography>
 								</th>
 								<th>
-									<Typography className="font-semibold">Payment Method</Typography>
+									<Typography className="font-semibold">Receipt URL</Typography>
 								</th>
 								<th>
-									<Typography className="font-semibold">Amount</Typography>
+									<Typography className="font-semibold">Refunded</Typography>
 								</th>
-								<th>
-									<Typography className="font-semibold">Date</Typography>
-								</th>
+								
 							</tr>
 						</thead>
-						{/*<tbody>*/}
-						{/*	<tr>*/}
-						{/*		<td>*/}
-						{/*			<span className="truncate">{order.payment.transactionId}</span>*/}
-						{/*		</td>*/}
-						{/*		<td>*/}
-						{/*			<span className="truncate">{order.payment.method}</span>*/}
-						{/*		</td>*/}
-						{/*		<td>*/}
-						{/*			<span className="truncate">{order.payment.amount}</span>*/}
-						{/*		</td>*/}
-						{/*		<td>*/}
-						{/*			<span className="truncate">{order.payment.date}</span>*/}
-						{/*		</td>*/}
-						{/*	</tr>*/}
-						{/*</tbody>*/}
+						<tbody>
+							<tr>
+								<td>
+									<span className="truncate">{order.payment.paymentIntentId}</span>
+								</td>
+								<td>
+									{
+										order.payment.receiptURL ? 
+										(<a href={order.payment.receiptURL}> View receipt </a>) :
+										"N/A"
+									}
+								</td>
+								<td>
+									<span className="truncate">{order.payment.refunded}</span>
+								</td>
+					
+							</tr>
+						</tbody>
 					</table>
 				</div>
 			</div>
 
-			{order.delivery.info.deliveryType == 'pickup' && (
+			{order.delivery.info && order.delivery.info.deliveryType == 'pickup' && (
 				<div className="pb-48">
 					<div className="pb-16 flex items-center">
 					<Icon color="action">local_shipping</Icon>

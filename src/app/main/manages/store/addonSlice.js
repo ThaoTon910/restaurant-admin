@@ -175,7 +175,7 @@ const addonSlice = createSlice({
         },
         [addAddonGroup.fulfilled]: addonGroupAdapter.addOne,
 		[updateAddonGroup.fulfilled]: addonGroupAdapter.upsertOne,
-		[removeAddonGroup.fulfilled]: (state, action) => addonGroupAdapter.removeOne(state, action.payload.id),
+		[deleteAddonGroup.fulfilled]: (state, action) => addonGroupAdapter.removeOne(state, action.payload.id),
 
 
         [addAddon.fulfilled]: (state, action) => {

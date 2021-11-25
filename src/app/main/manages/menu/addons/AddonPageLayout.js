@@ -34,10 +34,7 @@ function AddonPageHeader() {
 function AddonPageLayout() {
     const addonGroups = useSelector(selectAddonGroups);
     const dispatch = useDispatch();
-    useDeepCompareEffect(() => {
-        dispatch(getAddonGroups());
-    }, [dispatch]);
-
+  
 	return (
 		<FusePageCarded
 			header={

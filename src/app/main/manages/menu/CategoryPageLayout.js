@@ -49,9 +49,6 @@ function CategoryPageLayout() {
 		[dispatch]
 	);
 
-	useDeepCompareEffect(() => {
-		dispatch(getCategories());
-	}, [dispatch]);
 
 
 	return (

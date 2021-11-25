@@ -37,12 +37,6 @@ function OrdersTable(props) {
 	});
 
 	useEffect(() => {
-		dispatch(getOrders());
-		dispatch(getCategories());
-		dispatch(getAddonGroups());
-	}, [dispatch]);
-
-	useEffect(() => {
 		if (searchText.length !== 0) {
 			setData(FuseUtils.filterArrayByString(orders, searchText));
 			setPage(0);

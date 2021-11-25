@@ -72,7 +72,7 @@ function ServicetDialog(props) {
 	const dispatch = useDispatch();
 	const [image, setImage] = useState({ file: null, preview: "", dirty: false });
 	const dialog = useSelector((state) => state.restaurantApp.menuItems.dialog);
-	const { control, reset, handleSubmit, formState, getValues, setValue } = useForm({
+	const { control, reset, handleSubmit, formState, setError } = useForm({
 		mode: 'onChange',
 		defaultValues,
 	});
@@ -142,6 +142,14 @@ function ServicetDialog(props) {
 	 */
 	const onSubmit = async (data) => {
 		let imageUrl = "";
+		const regex  = /^\d+(?:\.\d{0,2})$/;
+		if (!regex.test(data.price)) {
+			setError('price');
+			return;
+		}
+		
+		data.price = parseFloat(data.price);
+
 		if (image.dirty) {
 			try {
 				const fileName = uuid()
@@ -280,7 +288,7 @@ function ServicetDialog(props) {
 											label="Price"
 											id="price"
 											autoComplete="off"
-											onChange={e => field.onChange(parseFloat(e.target.value))}
+											
 											error={!!errors.price}
 											helperText={errors?.price?.message}
 											variant="outlined"

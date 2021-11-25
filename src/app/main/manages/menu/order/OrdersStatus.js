@@ -80,11 +80,15 @@ export const orderStatuses = [
 ];
 
 function OrdersStatus(props) {
+
+	const status = _.find(orderStatuses, { name: props.name })
+	const color = status ? status.color : 'bg-grey text-white'
+
 	return (
 		<div
 		className={clsx(
 				'inline text-12 font-semibold py-4 px-12 rounded-full truncate',
-				_.find(orderStatuses, { name: props.name }).color
+				color
 			)}
 		>
 			{props.name}

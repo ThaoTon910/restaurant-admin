@@ -1,10 +1,14 @@
 import { createSlice, createAsyncThunk, createEntityAdapter, createSelector } from '@reduxjs/toolkit';
 import restaurantService from 'app/services/restaurantService';
-
+import moment from 'moment';
 
 export const getOrders = createAsyncThunk('restaurantApp/order/getOrders', async () => {
 	const response = await restaurantService.getOrders();
-	const data = response.data;
+	const data = response.data
+    .filter(order => order.status !== 'processing')
+    .sort((o1, o2) => {
+        return moment(o1.updatedTime).isBefore(o2.updatedTime) ? 1 : -1;
+    });
 	return data;
 });
 

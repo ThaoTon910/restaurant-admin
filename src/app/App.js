@@ -19,6 +19,7 @@ import store from './store';
 import Amplify from 'aws-amplify'
 import awsconfig from "../aws-exports";
 import {withAuthenticator, AmplifySignOut} from '@aws-amplify/ui-react';
+import RestaurantProvider from './RestaurantProvider';
 
 
 Amplify.configure(awsconfig)
@@ -55,7 +56,9 @@ const App = () => {
 												containerRoot: 'bottom-0 right-0 mb-52 md:mb-68 mr-8 lg:mr-80 z-99'
 											}}
 										>
+											<RestaurantProvider>
 											<FuseLayout />
+											</RestaurantProvider>
 										</SnackbarProvider>
 									</FuseTheme>
 								</FuseAuthorization>
