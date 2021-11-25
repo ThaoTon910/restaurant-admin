@@ -1,4 +1,4 @@
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { useEffect, useContext, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { motion } from 'framer-motion';
@@ -14,11 +14,11 @@ import TextField from '@material-ui/core/TextField';
 import { Controller, useForm, FormProvider } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import HoursEdit from '../../../../shared-components/components/HoursEdit';
-import { selectStoresById, updateStore } from '../../store/storesSlice';
+import HoursEdit from '../../../../shared-components/HoursEdit';
 
-import { StoreContextDispatch, STORE_ACTION_SET_HEADER_LEFT_RIGHT } from '../../context/StoreContext';
-import MuiPhoneNumberDefault from '../../../../shared-components/components/MuiPhoneNumberDefault';
+import MuiPhoneNumberDefault from '../../../../shared-components/MuiPhoneNumberDefault';
+import restaurantService from '../../../../services/restaurantService';
+import { StoreContextDispatch, STORE_ACTION_SET_HEADER_LEFT_RIGHT } from './context/StoreContext';
 
 function StoreSaveButton({ disabled, handleUpdateStore }) {
 	return (
@@ -31,6 +31,16 @@ function StoreSaveButton({ disabled, handleUpdateStore }) {
 				onClick={handleUpdateStore}
 			>
 				<span className="flex">Save</span>
+			</Button>
+		</motion.div>
+	);
+}
+
+function StoreGoBackButton({ path }) {
+	return (
+		<motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0, transition: { delay: 0.2 } }}>
+			<Button component={Link} to={path} className="whitespace-nowrap" variant="contained" color="primary">
+				<span className="flex">Back</span>
 			</Button>
 		</motion.div>
 	);
@@ -51,9 +61,9 @@ const schema = yup.object().shape({
 
 function StoreEdit({ location, history, match }) {
 	const dispatch = useDispatch();
-	const storeContextDispatch = useContext(StoreContextDispatch);
 	const { storeId } = match.params;
-	const selectedStore = useSelector(state => selectStoresById(state, storeId));
+	const storeContextDispatch = useContext(StoreContextDispatch);
+	const [selectedStore, setSelectedStore] = useState(null);
 	const [showFormValidation, setShowFormValidation] = useState(false);
 	const methods = useForm({
 		defaultValues: selectedStore, // initial value
@@ -61,6 +71,14 @@ function StoreEdit({ location, history, match }) {
 		resolver: yupResolver(schema)
 	});
 
+	// restaurantService.getMerchant();
+	useEffect(() => {
+		restaurantService.getMerchant().then(response => {
+			// console.log("merchant ", response);
+			setSelectedStore(response.data)
+		})
+
+	}, [])
 	const {
 		getValues,
 		register,
@@ -85,19 +103,32 @@ function StoreEdit({ location, history, match }) {
 		storeContextDispatch({
 			type: STORE_ACTION_SET_HEADER_LEFT_RIGHT,
 			payload: {
-				leftHeaderPath: selectedStore ? `/manage/stores/${selectedStore.id}` : null,
-				rightHeaderContent: StoreSaveButton({
-					disabled,
-					handleUpdateStore: () => {
-						if (isValid) {
-							if (isDirty) {
-								dispatch(updateStore(getValues()));
+				leftHeaderPath: 'Edit',
+				rightHeaderContent:
+					<StoreSaveButton
+						disabled={disabled}
+						handleUpdateStore={() => {
+							if (isValid) {
+								if (isDirty) {
+									restaurantService.updateMerchant(getValues()).then(response => {
+										// console.log("merchant ", response);
+										if (response.data) {
+											setSelectedStore({
+												...response.data,
+												updatedTime: undefined,
+												createdTime: undefined,
+												id: undefined
+											})
+										}
+
+									})
+									// dispatch(updateStore(getValues()));
+								}
+							} else if (!showFormValidation) {
+								setShowFormValidation(true);
 							}
-						} else if (!showFormValidation) {
-							setShowFormValidation(true);
-						}
-					}
-				})
+						}}
+					></StoreSaveButton>
 			}
 		});
 
@@ -110,98 +141,103 @@ function StoreEdit({ location, history, match }) {
 		};
 	}, [storeContextDispatch, dispatch, getValues, isDirty, isValid, showFormValidation, selectedStore]);
 
-	return selectedStore ? (
-		<FormProvider {...methods}>
-			<form>
-				<TableContainer className="max-w my-16" component={Paper}>
-					<Table>
-						<TableHead>
-							<TableRow>
-								<TableCell className="font-semibold text-14">Store Information</TableCell>
-								<TableCell />
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							<TableRow>
-								<TableCell className="w-1/3">Name</TableCell>
-								<TableCell>
-									<Controller
-										defaultValue={selectedStore.name}
-										render={({ field }) => (
-											<TextField
-												className="w-full"
-												{...field}
-												autoComplete="off"
-												size="small"
-												variant="outlined"
-												error={showFormValidation && errors.name}
-												helperText={
-													showFormValidation && errors.name ? errors.name.message : null
-												}
+	return (
+		<>
+			{selectedStore ? (
+				<FormProvider {...methods}>
+					<form>
+						<TableContainer className='max-w my-16' component={Paper}>
+							<Table>
+								<TableHead>
+									<TableRow>
+										<TableCell className='font-semibold text-14'>Store Information</TableCell>
+										<TableCell />
+									</TableRow>
+								</TableHead>
+								<TableBody>
+									<TableRow>
+										<TableCell className='w-1/3'>Name</TableCell>
+										<TableCell>
+											<Controller
+												defaultValue={selectedStore.name}
+												render={({ field }) => (
+													<TextField
+														className='w-full'
+														{...field}
+														autoComplete='off'
+														size='small'
+														variant='outlined'
+														error={showFormValidation && errors.name}
+														helperText={
+															showFormValidation && errors.name ? errors.name.message : null
+														}
+													/>
+												)}
+												rules={{ required: true }}
+												name='name'
+												control={control}
 											/>
-										)}
-										rules={{ required: true }}
-										name="name"
-										control={control}
-									/>
-								</TableCell>
-							</TableRow>
-							<TableRow>
-								<TableCell className="w-1/3">Phone</TableCell>
-								<TableCell>
-									<Controller
-										defaultValue={selectedStore.phone}
-										render={({ field }) => (
-											<MuiPhoneNumberDefault
-												autoComplete="off"
-												className="w-full"
-												name="phone"
-												value={field.value}
-												onBlur={field.onBlur}
-												onChange={field.onChange}
-												error={showFormValidation && errors.phone}
-												helperText={
-													showFormValidation && errors.phone ? errors.phone.message : null
-												}
+										</TableCell>
+									</TableRow>
+									<TableRow>
+										<TableCell className='w-1/3'>Phone</TableCell>
+										<TableCell>
+											<Controller
+												defaultValue={selectedStore.phone}
+												render={({ field }) => (
+													<MuiPhoneNumberDefault
+														autoComplete='off'
+														className='w-full'
+														name='phone'
+														value={field.value}
+														onBlur={field.onBlur}
+														onChange={field.onChange}
+														error={showFormValidation && errors.phone}
+														helperText={
+															showFormValidation && errors.phone ? errors.phone.message : null
+														}
+													/>
+												)}
+												rules={{ required: true }}
+												name='phone'
+												control={control}
 											/>
-										)}
-										rules={{ required: true }}
-										name="phone"
-										control={control}
-									/>
-								</TableCell>
-							</TableRow>
-							<TableRow>
-								<TableCell className="w-1/3">Address</TableCell>
-								<TableCell>
-									<Controller
-										defaultValue={selectedStore.address}
-										render={({ field }) => (
-											<TextField
-												className="w-full"
-												{...field}
-												autoComplete="off"
-												size="small"
-												variant="outlined"
-												error={showFormValidation && errors.address}
-												helperText={
-													showFormValidation && errors.address ? errors.address.message : null
-												}
+										</TableCell>
+									</TableRow>
+									<TableRow>
+										<TableCell className='w-1/3'>Address</TableCell>
+										<TableCell>
+											<Controller
+												defaultValue={selectedStore.address}
+												render={({ field }) => (
+													<TextField
+														className='w-full'
+														{...field}
+														autoComplete='off'
+														size='small'
+														variant='outlined'
+														error={showFormValidation && errors.address}
+														helperText={
+															showFormValidation && errors.address ? errors.address.message : null
+														}
+													/>
+												)}
+												rules={{ required: true }}
+												name='address'
+												control={control}
 											/>
-										)}
-										rules={{ required: true }}
-										name="address"
-										control={control}
-									/>
-								</TableCell>
-							</TableRow>
-						</TableBody>
-					</Table>
-				</TableContainer>
-				<HoursEdit />
-			</form>
-		</FormProvider>
-	) : null;
+										</TableCell>
+									</TableRow>
+								</TableBody>
+							</Table>
+						</TableContainer>
+						<HoursEdit />
+					</form>
+				</FormProvider>
+			) : null}
+			<StoreGoBackButton path='/manage/about'></StoreGoBackButton>
+		</>
+	);
 }
 
 export default withRouter(StoreEdit);

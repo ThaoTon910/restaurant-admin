@@ -14,7 +14,7 @@ import FuseUtils from '@fuse/utils';
 import restaurantService from 'app/services/restaurantService';
 
 // import { selectStoresById } from '../store/storesSlice';
-// import { StoreContextDispatch, STORE_ACTION_SET_HEADER_RIGHT } from '../context/StoreContext';
+import { StoreContextDispatch, STORE_ACTION_SET_HEADER_LEFT_RIGHT } from './context/StoreContext';
 
 function StoreEditButton({ path }) {
 	return (
@@ -38,21 +38,18 @@ function StoreAbout({ location, history, match }) {
 	}, [])
 
 
-	// const storeContextDispatch = useContext(StoreContextDispatch);
-	// const { storeId } = match.params;
+	const storeContextDispatch = useContext(StoreContextDispatch);
 	// const isStoreLoading = useSelector(({ nailsApp }) => nailsApp.stores.loading);
 	// const selectedStore = useSelector(state => selectStoresById(state, storeId));
-	// useEffect(() => {
-	// 	storeContextDispatch({
-	// 		type: STORE_ACTION_SET_HEADER_RIGHT,
-	// 		payload: <StoreEditButton path={`/manage/stores/${storeId}/edit`} />
-	// 	});
-	//
-	// 	return () => {
-	// 		// Clean up when leaving the page
-	// 		storeContextDispatch({ type: STORE_ACTION_SET_HEADER_RIGHT, payload: null });
-	// 	};
-	// }, [storeContextDispatch, storeId]);
+	useEffect(() => {storeContextDispatch({
+		type: STORE_ACTION_SET_HEADER_LEFT_RIGHT,
+
+		payload: {
+			leftHeaderPath: 'About',
+			rightHeaderContent: StoreEditButton({ path: '/manage/about/edit' })
+		}
+		});
+	}, [storeContextDispatch]);
 
 	return selectedStore ? (
 		<>

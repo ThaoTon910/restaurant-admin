@@ -2,29 +2,37 @@
 import FusePageCarded from '@fuse/core/FusePageCarded';
 
 import React from 'react';
-import StoreAbout from './StoreAbout';
+import { renderRoutes } from 'react-router-config';
 
-function AboutPageLayout(){
+import FuseSuspense from '@fuse/core/FuseSuspense';
+import StoreAbout from './StoreAbout';
+import { StoreContextProdiver } from './context/StoreContext';
+import StorePageHeader from './StorePageHeader';
+
+function AboutPageLayout({route}){
 
 
 	return (
-		<FusePageCarded
-			header={
-				<div className="flex items-center">
-					<h1>Pho 28</h1>
-				</div>
-			}
-			contentToolbar={
-				<div className="px-24">
-					<h4>About</h4>
-				</div>
-			}
-			content={
-				<div className="p-24">
-					<StoreAbout />
-				</div>
-			}
-		/>
+		<StoreContextProdiver>
+			<FusePageCarded
+				header={
+					<div className="flex items-center">
+						<h1>Pho 28</h1>
+					</div>
+				}
+				contentToolbar={
+					<div className="px-24 w-full">
+						<StorePageHeader />
+					</div>
+				}
+				content={
+					<div className="p-24">
+						{/*<StoreAbout />*/}
+						<FuseSuspense>{renderRoutes(route.routes)}</FuseSuspense>
+					</div>
+				}
+			/>
+		</StoreContextProdiver>
 	);
 }
 
