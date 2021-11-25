@@ -4,15 +4,18 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import history from '@history';
 import _ from '@lodash';
-import { setInitialSettings, setDefaultSettings } from 'app/store/fuse/settingsSlice';
+import { setInitialSettings } from 'app/store/fuse/settingsSlice';
 import { showMessage } from 'app/store/fuse/messageSlice';
 import auth0Service from 'app/services/auth0Service';
 import firebaseService from 'app/services/firebaseService';
 import jwtService from 'app/services/jwtService';
+import { appendNavigationItem } from '../../store/fuse/navigationSlice';
+import cognitoService from '../../services/cognitoService/cognitoService';
+import ManageNavigation from '../../main/manages/manageNavigation';
 
 export const setUserDataAuth0 = tokenData => async dispatch => {
 	const user = {
-		role: ['admin'],
+		roles: ['admin'],
 		from: 'auth0',
 		data: {
 			displayName: tokenData.username || tokenData.name,
@@ -56,7 +59,7 @@ export const createUserSettingsFirebase = authUser => async (dispatch, getState)
 	const user = _.merge({}, guestUser, {
 		uid: authUser.uid,
 		from: 'firebase',
-		role: ['admin'],
+		roles: ['admin'],
 		data: {
 			displayName: authUser.displayName,
 			email: authUser.email,
@@ -74,16 +77,19 @@ export const setUserData = user => async (dispatch, getState) => {
 	/*
         You can redirect the logged-in user to a specific route depending on his role
          */
-
-	history.location.state = {
-		redirectUrl: user.redirectUrl // for example 'apps/academy'
-	};
-
+	if (!history.location.state || !history.location.state.redirectUrl) {
+		history.location.state = {
+			redirectUrl: '/manage' // user.redirectUrl
+		};
+		console.log("history redirectUrl = ", history)
+	}
 	/*
     Set User Settings
      */
-	dispatch(setDefaultSettings(user.data.settings));
+	// TODO: separate initial navigation for staff and admin role
 
+	dispatch(appendNavigationItem(ManageNavigation));
+	// dispatch(setDefaultSettings(user.data.settings));
 	dispatch(setUser(user));
 };
 
@@ -114,7 +120,7 @@ export const updateUserShortcuts = shortcuts => async (dispatch, getState) => {
 export const logoutUser = () => async (dispatch, getState) => {
 	const { user } = getState().auth;
 
-	if (!user.role || user.role.length === 0) {
+	if (!user.roles || user.roles.length === 0) {
 		// is guest
 		return null;
 	}
@@ -132,7 +138,12 @@ export const logoutUser = () => async (dispatch, getState) => {
 			auth0Service.logout();
 			break;
 		}
+		case 'cognito': {
+			cognitoService.logout();
+			break;
+		}
 		default: {
+			cognitoService.logout();
 			jwtService.logout();
 		}
 	}
@@ -143,7 +154,7 @@ export const logoutUser = () => async (dispatch, getState) => {
 };
 
 export const updateUserData = user => async (dispatch, getState) => {
-	if (!user.role || user.role.length === 0) {
+	if (!user.roles || user.roles.length === 0) {
 		// is guest
 		return;
 	}
@@ -188,11 +199,12 @@ export const updateUserData = user => async (dispatch, getState) => {
 };
 
 const initialState = {
-	role: [], // guest
+	roles: [], // guest
+	groups: [],
 	data: {
-		displayName: 'Hoang Tran',
-		photoURL: 'assets/images/avatars/hoang.jpg',
-		email: 'hoang@pho28.com',
+		displayName: 'Guess',
+		photoURL: 'assets/images/avatars/Velazquez.jpg',
+		email: '',
 		shortcuts: ['calendar', 'mail', 'contacts', 'todo']
 	}
 };

@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, createEntityAdapter, createSelector } from '@reduxjs/toolkit';
 import restaurantService from 'app/services/restaurantService';
 
 export const getAddonGroups = createAsyncThunk('restaurantApp/addons/getAddonGroups', async () => {
@@ -47,6 +47,37 @@ const addonGroupAdapter = createEntityAdapter({});
 export const { selectAll: selectAddonGroups, selectById: selectAddonGroupById } = addonGroupAdapter.getSelectors(
     state => state.restaurantApp.addons
 );
+
+export const selectAddons = createSelector(
+	selectAddonGroups,
+	(addonGroups) => {
+		let addons = {};
+		addonGroups
+			.map(group => group.addons)
+			.flat()
+			.forEach(addon => {
+				addons[addon.id] = addon
+			});
+
+		return addons;
+	}
+)
+
+export const selectAddonByIdList = (addonIdList) => (state) => {
+    const addons = selectAddons(state);
+    let addonList = [];
+    addonIdList.forEach(id => {
+        if (id in addons){
+            addonList.push(addons[id]);
+        }
+    })
+
+    // console.log(addonIdList)
+    // console.log(addons)
+    // console.log(addonList)
+    return  addonList;
+}
+
 
 const addonSlice = createSlice({
     name: 'restaurantApp/addons',

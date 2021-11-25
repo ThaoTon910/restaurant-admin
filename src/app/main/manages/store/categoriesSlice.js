@@ -1,6 +1,7 @@
-import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, createEntityAdapter, createSelector } from '@reduxjs/toolkit';
+import axios from 'axios';
 import restaurantService from '../../../services/restaurantService';
-import {addMenuItem, deleteMenuItem, updateMenuItem} from './menuItemsSlice';
+import { addMenuItem, deleteMenuItem, updateMenuItem } from './menuItemsSlice';
 
 export const getCategories = createAsyncThunk('restaurantApp/categories/getCategories', async () => {
 	const response = await restaurantService.getCategories();
@@ -20,16 +21,18 @@ export const addCategory = createAsyncThunk(
 
 export const updateCategory = createAsyncThunk(
 	'restaurantApp/categories/updateCategory',
-	async ({id, data}) => {
-		const response = await restaurantService.updateCategory(id, data)
+	async (category, { dispatch, getState }) => {
+		const response = await restaurantService.updateCategory(category.id, category)
+
 		return response.data;
 	}
 );
 
 export const removeCategory = createAsyncThunk(
 	'restaurantApp/categories/deleteCategory',
-	async (id) => {
-		const response = await restaurantService.deleteCategory(id)
+	async (category, { dispatch, getState }) => {
+		const response = await restaurantService.deleteCategory(category.id)
+
 		return response.data;
 	}
 );
@@ -40,6 +43,30 @@ const categoriesAdapter = createEntityAdapter({});
 export const { selectAll: selectCategories, selectById: selectCategoryById } = categoriesAdapter.getSelectors(
 	state => state.restaurantApp.categories
 );
+
+export const selectMenuItems = createSelector(
+	selectCategories,
+	(categories) => {
+		let items = {};
+		categories
+			.map(cat => cat.menuItems)
+			.flat()
+			.forEach(item => {
+				items[item.id] = item
+			});
+
+		return items;
+	}
+)
+
+export const selectMenuItemById = (id) => (state) => {
+	const menuItems = selectMenuItems(state);
+	if (id in menuItems) {
+		return menuItems[id];
+	} else {
+		return undefined;
+	}
+}
 
 const categoriesSlice = createSlice({
 	name: 'restaurantApp/categories',
@@ -105,48 +132,48 @@ const categoriesSlice = createSlice({
 		[removeCategory.fulfilled]: (state, action) => categoriesAdapter.removeOne(state, action.payload.id),
 
 		[addMenuItem.fulfilled]: (state, action) => {
-			const {id, categoryId} = action.payload;
+			const { id, categoryId } = action.payload;
 			const oldMenuItems = state.entities[categoryId]?.menuItems;
-			if (!oldMenuItems) {return;}
+			if (!oldMenuItems) { return; }
 			const newMenuItems = oldMenuItems.concat(action.payload)
 
 			categoriesAdapter.updateOne(
-				state, 
+				state,
 				{
 					id: categoryId,
-					changes: { menuItems: newMenuItems}
+					changes: { menuItems: newMenuItems }
 				})
 		},
 
 		[deleteMenuItem.fulfilled]: (state, action) => {
-			const {id, categoryId} = action.payload;
+			const { id, categoryId } = action.payload;
 			const oldMenuItems = state.entities[categoryId]?.menuItems;
-			if (!oldMenuItems) {return;}
+			if (!oldMenuItems) { return; }
 			const newMenuItems = oldMenuItems.filter(item => item.id !== id)
 
 			categoriesAdapter.updateOne(
-				state, 
+				state,
 				{
 					id: categoryId,
-					changes: { menuItems: newMenuItems}
+					changes: { menuItems: newMenuItems }
 				})
 		},
 
 		[updateMenuItem.fulfilled]: (state, action) => {
-			const {id, categoryId} = action.payload;
+			const { id, categoryId } = action.payload;
 			const oldMenuItems = state.entities[categoryId]?.menuItems;
-			if (!oldMenuItems) {return;}
+			if (!oldMenuItems) { return; }
 			const updatedIndex = oldMenuItems.findIndex(item => item.id === id);
 			const newMenuItems = [
-				...oldMenuItems.slice(0,updatedIndex),
+				...oldMenuItems.slice(0, updatedIndex),
 				action.payload,
-			   ...oldMenuItems.slice(updatedIndex+1)
-			   ]
+				...oldMenuItems.slice(updatedIndex + 1)
+			]
 			categoriesAdapter.updateOne(
-				state, 
+				state,
 				{
 					id: categoryId,
-					changes: { menuItems: newMenuItems}
+					changes: { menuItems: newMenuItems }
 				})
 		}
 	}
