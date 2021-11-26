@@ -9,9 +9,9 @@ import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import Icon from '@material-ui/core/Icon';
-import { openEditMenuItemDialog, openNewMenuItemDialog, deleteMenuItem } from '../store/menuItemsSlice'
 import { useDispatch } from 'react-redux';
 import { Storage } from 'aws-amplify';
+import { openEditMenuItemDialog, openNewMenuItemDialog, deleteMenuItem } from '../store/menuItemsSlice'
 
 export function MenuItemRow({ item, category }) {
 	const [imgSrc, setImgSrc] = useState("");
@@ -24,8 +24,7 @@ export function MenuItemRow({ item, category }) {
 		<TableRow>
 			<TableCell component="th" scope="row">
 				<div className="flex items-center">
-
-					{<img src={imgSrc ? imgSrc : "assets/images/placeholders/y9DpT.jpeg"} alt="" className="h-60 w-auto m-5" />}
+					<img src={imgSrc || "assets/images/placeholders/y9DpT.jpeg"} alt="" className="h-60 w-auto m-5" />
 					<div>{item.name}</div>
 				</div>
 			</TableCell>

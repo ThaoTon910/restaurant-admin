@@ -15,6 +15,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import clsx from 'clsx';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { removeOrders } from '../../store/ordersSlice';
 
 const rows = [
 	{

@@ -1,0 +1,16 @@
+{
+  "auth": {
+    "restaurantadmin04cfe250": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  },
+  "storage": {
+    "s3fa7c1c8b": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation"
+    }
+  }
+}

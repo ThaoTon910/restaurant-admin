@@ -15,9 +15,9 @@ function RestaurantProvider(props) {
 		dispatch(getAddonGroups());
 	}, [dispatch]);
     return (
-        <React.Fragment>
+        <>
             {props.children}
-        </React.Fragment>
+        </>
     )
   }
 

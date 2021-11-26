@@ -9,9 +9,9 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import GoogleMap from 'google-map-react';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import OrdersStatus from '../OrdersStatus';
 import restaurantService from 'app/services/restaurantService';
 import moment from 'moment';
+import OrdersStatus from '../OrdersStatus';
 
 function Marker(props) {
 	return (
@@ -212,7 +212,7 @@ function OrderDetailsTab(props) {
 				</div>
 			</div>
 
-			{order.delivery.info && order.delivery.info.deliveryType == 'pickup' && (
+			{order.delivery.info && order.delivery.info.deliveryType === 'pickup' && (
 				<div className="pb-48">
 					<div className="pb-16 flex items-center">
 					<Icon color="action">local_shipping</Icon>

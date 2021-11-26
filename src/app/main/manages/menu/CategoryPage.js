@@ -7,8 +7,8 @@ import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 
-import { MenuItemTable } from './MenuItemTable';
 import { useDispatch } from 'react-redux';
+import { MenuItemTable } from './MenuItemTable';
 import { removeCategory } from '../store/categoriesSlice';
 
 function CategoryPage({ treeServices, updateCategory }) {

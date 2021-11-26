@@ -13,13 +13,13 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import FuseLoading from '@fuse/core/FuseLoading';
+import moment from 'moment';
 import OrdersStatus from '../order/OrdersStatus';
 import { selectOrders, getOrders, isLoading } from '../../store/orderSlice';
 import OrdersTableHead from './OrdersTableHead';
 import { getCategories } from '../../store/categoriesSlice';
 import { getAddonGroups } from '../../store/addonSlice';
 
-import moment from 'moment';
 
 function OrdersTable(props) {
 	const dispatch = useDispatch();

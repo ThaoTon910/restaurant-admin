@@ -14,7 +14,7 @@ export const getOrders = createAsyncThunk('restaurantApp/order/getOrders', async
 
 export const updateOrderStatus = createAsyncThunk('restaurantApp/order/updateOrderStatus', async ({id, status}) => {
 	const response = await restaurantService.updateOrderStatus(id, {status});
-	const data = response.data;
+	const {data} = response;
 	return data;
 
 });

@@ -1,16 +1,26 @@
 {
   "auth": {
-    "restaurantadmin04cfe250": {
+    "restaurantadmin4e889399": {
       "service": "Cognito",
+      "serviceType": "imported",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
       "customAuth": false
     }
   },
   "storage": {
-    "s3fa7c1c8b": {
+    "restaurantadmin027d6c39": {
       "service": "S3",
-      "providerPlugin": "awscloudformation"
+      "serviceType": "imported",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": []
+    }
+  },
+  "hosting": {
+    "amplifyhosting": {
+      "service": "amplifyhosting",
+      "providerPlugin": "awscloudformation",
+      "type": "manual"
     }
   }
 }
