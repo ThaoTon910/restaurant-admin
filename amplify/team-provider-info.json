@@ -1,19 +1,43 @@
 {
   "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-restaurantadmin-dev-154313-authRole",
-      "UnauthRoleArn": "arn:aws:iam::956840736102:role/amplify-restaurantadmin-dev-154313-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::956840736102:role/amplify-restaurantadmin-dev-154313-authRole",
+      "AuthRoleName": "amplify-restaurantadmin-dev-174435-authRole",
+      "UnauthRoleArn": "arn:aws:iam::956840736102:role/amplify-restaurantadmin-dev-174435-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::956840736102:role/amplify-restaurantadmin-dev-174435-authRole",
       "Region": "us-east-2",
-      "DeploymentBucketName": "amplify-restaurantadmin-dev-154313-deployment",
-      "UnauthRoleName": "amplify-restaurantadmin-dev-154313-unauthRole",
-      "StackName": "amplify-restaurantadmin-dev-154313",
-      "StackId": "arn:aws:cloudformation:us-east-2:956840736102:stack/amplify-restaurantadmin-dev-154313/8777e940-f63e-11eb-8f54-0a6458d22c16",
-      "AmplifyAppId": "d2v3ylk6b2aak7"
+      "DeploymentBucketName": "amplify-restaurantadmin-dev-174435-deployment",
+      "UnauthRoleName": "amplify-restaurantadmin-dev-174435-unauthRole",
+      "StackName": "amplify-restaurantadmin-dev-174435",
+      "StackId": "arn:aws:cloudformation:us-east-2:956840736102:stack/amplify-restaurantadmin-dev-174435/6af902d0-4e5a-11ec-b010-069e6c6ac232",
+      "AmplifyAppId": "d1jjnl6epfifv2"
     },
     "categories": {
       "auth": {
-        "restaurantadmin04cfe250": {}
+        "restaurantadmin4e889399": {
+          "userPoolId": "us-east-2_Apoq12USk",
+          "userPoolName": "restaurantadmin04cfe250_userpool_04cfe250-dev",
+          "webClientId": "6pphmbebu62nlqom1cul7t81m7",
+          "nativeClientId": "6pphmbebu62nlqom1cul7t81m7",
+          "identityPoolId": "us-east-2:0a3573e6-190c-44f9-aff7-232451007950",
+          "identityPoolName": "restaurantadmin04cfe250_identitypool_04cfe250__dev",
+          "allowUnauthenticatedIdentities": true,
+          "authRoleArn": "arn:aws:iam::956840736102:role/amplify-restaurantadmin-dev-154313-authRole",
+          "authRoleName": "amplify-restaurantadmin-dev-154313-authRole",
+          "unauthRoleArn": "arn:aws:iam::956840736102:role/amplify-restaurantadmin-dev-154313-unauthRole",
+          "unauthRoleName": "amplify-restaurantadmin-dev-154313-unauthRole"
+        }
+      },
+      "storage": {
+        "restaurantadmin027d6c39": {
+          "bucketName": "restaurantadmin6f10ac2eb7734631b044d481b99f7940154313-dev",
+          "region": "us-east-2"
+        }
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d1jjnl6epfifv2",
+          "type": "manual"
+        }
       }
     }
   }

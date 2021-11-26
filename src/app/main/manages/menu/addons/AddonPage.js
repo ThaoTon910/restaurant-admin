@@ -7,6 +7,7 @@ import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 
+// eslint-disable-next-line import/no-named-as-default
 import AddonTable from 'app/main/manages/menu/addons/AddonTable';
 import { useDispatch } from 'react-redux';
 import { deleteAddonGroup, openEditAddonGroupDialog } from '../../store/addonSlice';

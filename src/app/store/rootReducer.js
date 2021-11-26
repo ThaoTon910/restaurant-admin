@@ -1,8 +1,8 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import auth from 'app/auth/store';
+import restaurantApp from 'app/main/manages/store';
 import fuse from './fuse';
 import i18n from './i18nSlice';
-import restaurantApp from 'app/main/manages/store';
 
 const createReducer = asyncReducers => (state, action) => {
 	const combinedReducer = combineReducers({

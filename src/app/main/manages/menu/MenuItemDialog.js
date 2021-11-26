@@ -18,7 +18,7 @@ import { Controller, useForm, useFieldArray } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
 import _ from '@lodash';
-import * as yup from 'yup';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { v4 as uuid } from "uuid";
 
 
@@ -36,7 +36,7 @@ const AddonPicker = () => {
 	});
 
 	return (
-		<React.Fragment>
+		<>
 			<IconButton className="px-5 mr-4 text-green-500 block" onClick={() => append({ test: 'test' })}>
 				<Icon>add_circle</Icon>
 			</IconButton>
@@ -52,7 +52,7 @@ const AddonPicker = () => {
 					</div>
 				))
 			}
-		</React.Fragment>
+		</>
 	);
 }
 

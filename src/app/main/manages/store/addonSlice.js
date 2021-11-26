@@ -51,7 +51,7 @@ export const { selectAll: selectAddonGroups, selectById: selectAddonGroupById } 
 export const selectAddons = createSelector(
 	selectAddonGroups,
 	(addonGroups) => {
-		let addons = {};
+		const addons = {};
 		addonGroups
 			.map(group => group.addons)
 			.flat()
@@ -65,7 +65,7 @@ export const selectAddons = createSelector(
 
 export const selectAddonByIdList = (addonIdList) => (state) => {
     const addons = selectAddons(state);
-    let addonList = [];
+    const addonList = [];
     addonIdList.forEach(id => {
         if (id in addons){
             addonList.push(addons[id]);

@@ -12,13 +12,12 @@ import Provider from 'react-redux/es/components/Provider';
 import { Router } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
 import DateFnsUtils from '@date-io/date-fns';
+import Amplify from 'aws-amplify'
 import AppContext from './AppContext';
 import { Auth } from './auth';
 import routes from './fuse-configs/routesConfig';
 import store from './store';
-import Amplify from 'aws-amplify'
 import awsconfig from "../aws-exports";
-import {withAuthenticator, AmplifySignOut} from '@aws-amplify/ui-react';
 import RestaurantProvider from './RestaurantProvider';
 
 

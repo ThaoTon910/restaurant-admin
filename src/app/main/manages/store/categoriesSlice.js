@@ -47,7 +47,7 @@ export const { selectAll: selectCategories, selectById: selectCategoryById } = c
 export const selectMenuItems = createSelector(
 	selectCategories,
 	(categories) => {
-		let items = {};
+		const items = {};
 		categories
 			.map(cat => cat.menuItems)
 			.flat()
@@ -63,9 +63,9 @@ export const selectMenuItemById = (id) => (state) => {
 	const menuItems = selectMenuItems(state);
 	if (id in menuItems) {
 		return menuItems[id];
-	} else {
-		return undefined;
 	}
+	return undefined;
+
 }
 
 const categoriesSlice = createSlice({

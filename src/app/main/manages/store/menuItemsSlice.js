@@ -1,7 +1,6 @@
 import { createSlice, createSelector, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
 import axios from 'axios';
 import restaurantService from '../../../services/restaurantService';
-import {selectCategories} from 'app/main/manages/store/categoriesSlice';
 
 export const getMenuItems = createAsyncThunk('restaurantApp/menuItems/getMenuItems', async () => {
 	const response = await restaurantService.getMenuItems();

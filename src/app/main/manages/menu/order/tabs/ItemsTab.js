@@ -17,7 +17,7 @@ function OrderItem(props) {
 	const menuItem = useSelector(selectMenuItemById(item.menuItemId));
 	const addons = useSelector(selectAddonByIdList(item.addOns));
 	if (!menuItem) {
-		return <div></div>
+		return <div />
 	}
 	return (
 		<Card>
@@ -25,7 +25,7 @@ function OrderItem(props) {
 
 			<CardContent>
 				{
-					addons.length != 0 ? (
+					addons.length !== 0 ? (
 						<>
 							<Typography variant="h6" component="div">
 								Addons

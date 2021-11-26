@@ -28,14 +28,10 @@ import OrderDetailsTab from './tabs/OrderDetailsTab';
 import ProductsTab from './tabs/ProductsTab';
 import ItemsTab from './tabs/ItemsTab';
 
-
-function OrderStatusControl({onChange, value}) {
-
+function OrderStatusControl({ onChange, value }) {
 	return (
-		<div class="flex items-center">
-			<Typography className="text-16 sm:text-20 truncate font-semibold mr-8">
-				{`Status: `}
-			</Typography>
+		<div className="flex items-center">
+			<Typography className="text-16 sm:text-20 truncate font-semibold mr-8">{`Status: `}</Typography>
 			<Select
 				labelId="demo-simple-select-label"
 				id="demo-simple-select"
@@ -44,14 +40,13 @@ function OrderStatusControl({onChange, value}) {
 				variant="outlined"
 				onChange={onChange}
 			>
-				<MenuItem value={"pending"}>Pending</MenuItem>
-				<MenuItem value={"completed"}>Completed</MenuItem>
-				<MenuItem value={"canceled"}>Canceled</MenuItem>
+				<MenuItem value="pending">Pending</MenuItem>
+				<MenuItem value="completed">Completed</MenuItem>
+				<MenuItem value="canceled">Canceled</MenuItem>
 			</Select>
 		</div>
-	)
+	);
 }
-
 
 function Order404() {
 	return (
@@ -63,13 +58,7 @@ function Order404() {
 			<Typography color="textSecondary" variant="h5">
 				There is no such order!
 			</Typography>
-			<Button
-				className="mt-24"
-				component={Link}
-				variant="outlined"
-				to="/manage/orders"
-				color="inherit"
-			>
+			<Button className="mt-24" component={Link} variant="outlined" to="/manage/orders" color="inherit">
 				Go to Orders Page
 			</Button>
 		</motion.div>
@@ -80,9 +69,8 @@ function Order(props) {
 	const dispatch = useDispatch();
 	const theme = useTheme();
 	const routeParams = useParams();
-	const order = useSelector(getOrderById(routeParams.orderId))
+	const order = useSelector(getOrderById(routeParams.orderId));
 	const [tabValue, setTabValue] = useState(0);
-
 
 	function handleChangeTab(event, value) {
 		setTabValue(value);
@@ -93,7 +81,7 @@ function Order(props) {
 	}
 
 	if (!order) {
-		return <Order404 />
+		return <Order404 />;
 	}
 
 	return (
@@ -132,8 +120,11 @@ function Order(props) {
 									<Typography className="text-16 sm:text-20 truncate font-semibold">
 										{`Order ${order.id.substring(0, 4)}`}
 									</Typography>
-									
-									<OrderStatusControl value={order.status} onChange={event => onOrderStatusChange(event.target.value)}/>
+
+									<OrderStatusControl
+										value={order.status}
+										onChange={event => onOrderStatusChange(event.target.value)}
+									/>
 									<Typography className="text-16 sm:text-20 truncate font-semibold">
 										{`${order.items.length} items`}
 									</Typography>
@@ -170,7 +161,6 @@ function Order(props) {
 					{tabValue === 0 && <ItemsTab order={order} />}
 					{tabValue === 1 && <OrderDetailsTab order={order} />}
 				</div>
-
 			}
 			innerScroll
 		/>

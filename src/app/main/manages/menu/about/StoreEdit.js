@@ -128,7 +128,7 @@ function StoreEdit({ location, history, match }) {
 								setShowFormValidation(true);
 							}
 						}}
-					></StoreSaveButton>
+					 />
 			}
 		});
 
@@ -235,7 +235,7 @@ function StoreEdit({ location, history, match }) {
 					</form>
 				</FormProvider>
 			) : null}
-			<StoreGoBackButton path='/manage/about'></StoreGoBackButton>
+			<StoreGoBackButton path='/manage/about' />
 		</>
 	);
 }
